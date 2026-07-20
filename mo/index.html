@@ -1,666 +1,416 @@
 <!DOCTYPE html>
-<script type="application/json" id="cowork-artifact-meta">
-{
-  "name": "Mo Pipeline Board",
-  "schemaVersion": 1,
-  "description": "Mia O'Malley brand pipeline board, pulled live from collaborate@miaomalley.com via Spark search on each open. No Google Sheet dependency. Includes a manual 'Draft replies' action that drafts responses to open threads in Mia's voice using her rate/negotiation guide, saved to the collaborate@ drafts folder via Spark.",
-  "mcpTools": [
-    "mcp__Spark__search",
-    "mcp__Spark__draft"
-  ],
-  "mcpServerNames": [
-    "Spark"
-  ]
-}
-</script>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mia O'Malley — Project Board</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Mia O'Malley — Brand Partnership Pipeline</title>
 <style>
   :root{
-    color-scheme: light;
-    --paper:#ECE5DF;
-    --paper-2:#F3EDE8;
-    --ink:#231B1F;
-    --ink-soft:#5B5157;
-    --plum:#5E2A47;
-    --rule:#D6CCC4;
+    --cream:#faf6f0;
+    --paper:#fffdfa;
+    --ink:#2b2420;
+    --ink-soft:#6b6058;
+    --rule:#ddd2c4;
+    --gold:#a9813f;
+    --blush:#c98b7a;
 
-    --won-ink:#2C574A;      --won-bg:#D6E4DB;
-    --wait-ink:#7E5E14;     --wait-bg:#EEE2C6;
-    --act-ink:#A9352A;      --act-bg:#F1D9D3;
-    --gift-ink:#54426F;     --gift-bg:#E4DBEC;
-    --done-ink:#4F4A48;     --done-bg:#DDD6D1;
-
-    --display:'Fraunces',Georgia,serif;
-    --util:'Space Grotesk',system-ui,sans-serif;
+    --act:#b3543a;
+    --act-bg:#f7e6df;
+    --won:#3f6a4d;
+    --won-bg:#e3ece2;
+    --wait:#9c7a2e;
+    --wait-bg:#f3ecd8;
+    --gift:#a1567b;
+    --gift-bg:#f5e2ec;
+    --done:#5b6470;
+    --done-bg:#e6e9ec;
   }
-
-  *{box-sizing:border-box;margin:0;padding:0}
-
+  *{box-sizing:border-box;}
   body{
-    background:var(--paper);
+    margin:0;
+    background:var(--cream);
     color:var(--ink);
-    font-family:var(--util);
-    line-height:1.5;
-    -webkit-font-smoothing:antialiased;
-    padding:clamp(20px,5vw,64px) clamp(16px,5vw,48px) 80px;
+    font-family:Georgia, 'Times New Roman', serif;
+    padding:40px 32px 80px;
   }
+  .wrap{max-width:1180px;margin:0 auto;}
 
-  .wrap{max-width:1080px;margin:0 auto}
-
-  .mast{
+  /* Masthead */
+  .masthead{
+    text-align:center;
+    padding-bottom:24px;
     border-bottom:2px solid var(--ink);
-    padding-bottom:22px;
-    margin-bottom:26px;
-  }
-  .eyebrow{
-    font-size:12px;font-weight:600;letter-spacing:.22em;
-    text-transform:uppercase;color:var(--plum);
-  }
-  h1{
-    font-family:var(--display);
-    font-optical-sizing:auto;
-    font-weight:900;
-    font-size:clamp(38px,8vw,76px);
-    line-height:.95;letter-spacing:-.015em;
-    margin:.12em 0 .18em;
-  }
-  h1 em{font-style:italic;font-weight:500}
-  .asof{font-size:13px;color:var(--ink-soft);letter-spacing:.02em}
-  .asof b{color:var(--ink);font-weight:600}
-
-  .ledger{
-    display:grid;grid-template-columns:repeat(4,1fr);
-    gap:1px;background:var(--rule);border:1px solid var(--rule);
-    margin-bottom:40px;
-  }
-  .cell{background:var(--paper-2);padding:18px 20px 20px}
-  .cell .lab{
-    font-size:11px;font-weight:600;letter-spacing:.16em;
-    text-transform:uppercase;color:var(--ink-soft);
-  }
-  .cell .fig{
-    font-family:var(--display);font-weight:600;
-    font-size:clamp(26px,4vw,40px);line-height:1.05;
-    margin-top:8px;letter-spacing:-.01em;
-  }
-  .cell .sub{font-size:12px;color:var(--ink-soft);margin-top:3px}
-  @media(max-width:640px){.ledger{grid-template-columns:repeat(2,1fr)}}
-
-  .toolbar{
-    display:flex;justify-content:space-between;align-items:center;gap:14px;
     margin-bottom:8px;
-    flex-wrap:wrap;
   }
-  .toolbar .live{
-    font-size:11px;color:var(--ink-soft);letter-spacing:.04em;
+  .kicker{
+    letter-spacing:.28em;
+    text-transform:uppercase;
+    font-size:11px;
+    color:var(--blush);
+    margin:0 0 10px;
   }
-  .toolbar .actions{display:flex;gap:14px;flex-wrap:wrap}
-  .toolbar button{
-    font-family:var(--util);font-size:12px;font-weight:600;
-    letter-spacing:.08em;text-transform:uppercase;
-    color:var(--ink-soft);background:none;border:none;
-    cursor:pointer;padding:4px 2px;
+  h1.title{
+    font-size:44px;
+    margin:0;
+    letter-spacing:.02em;
+    font-weight:400;
   }
-  .toolbar button:hover{color:var(--plum)}
-  .toolbar button:disabled{opacity:.4;cursor:default}
-  .toolbar button#draft-btn{color:var(--plum);border-bottom:1px solid var(--plum)}
+  .subtitle{
+    font-style:italic;
+    color:var(--ink-soft);
+    margin:10px 0 0;
+    font-size:15px;
+  }
+  .meta-line{
+    display:flex;
+    justify-content:space-between;
+    font-size:11px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-top:18px;
+  }
 
-  .draft-status{font-size:11px;color:var(--ink-soft);letter-spacing:.02em;margin-bottom:18px;min-height:14px}
-  .draft-status.err{color:var(--act-ink)}
-
-  .card-draft-note{
-    margin-top:8px;padding-top:8px;border-top:1px dashed var(--rule);
-    font-size:11.5px;color:var(--plum);font-style:italic;
-  }
-
-  .section{
-    margin-bottom:14px;
+  /* Ledger */
+  .ledger{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:0;
+    margin:32px 0 44px;
+    border-top:1px solid var(--rule);
     border-bottom:1px solid var(--rule);
   }
-  .section[open]{padding-bottom:26px}
-  .sec-head{
-    display:flex;align-items:baseline;gap:12px;
-    padding:14px 0;cursor:pointer;list-style:none;
+  .ledger-cell{
+    padding:20px 18px;
+    text-align:center;
+    border-left:1px solid var(--rule);
   }
-  .sec-head::-webkit-details-marker{display:none}
-  .chev{
-    flex:none;width:12px;height:12px;margin-right:2px;
-    border-right:2px solid var(--ink-soft);
-    border-bottom:2px solid var(--ink-soft);
-    transform:rotate(-45deg);transition:transform .2s ease;
-    align-self:center;
+  .ledger-cell:first-child{border-left:none;}
+  .ledger-label{
+    font-size:10px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-bottom:8px;
   }
-  .section[open] .chev{transform:rotate(45deg)}
-  .sec-head h2{
-    font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  .ledger-value{
+    font-size:26px;
   }
-  .sec-head .count{font-size:12px;color:var(--ink-soft);font-weight:500}
-  .sec-head .line{flex:1;height:1px;background:var(--rule)}
-  .sec-head .hint{
-    font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
-    color:var(--act-ink);
+  .ledger-sub{
+    font-size:11px;
+    color:var(--ink-soft);
+    font-style:italic;
+    margin-top:4px;
   }
 
-  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-  @media(max-width:720px){.grid{grid-template-columns:1fr}}
-
-  .card{
-    background:var(--paper-2);
+  /* Section */
+  .section{margin-bottom:48px;}
+  .section-head{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    margin-bottom:20px;
+  }
+  .section-head h2{
+    font-size:20px;
+    font-weight:400;
+    letter-spacing:.03em;
+    margin:0;
+    white-space:nowrap;
+  }
+  .section-head .rule{
+    flex:1;
+    height:1px;
+    background:var(--rule);
+  }
+  .count-badge{
+    font-size:11px;
+    letter-spacing:.08em;
+    color:var(--ink-soft);
     border:1px solid var(--rule);
-    border-left:4px solid var(--done-ink);
-    padding:18px 20px 20px;
-    display:flex;flex-direction:column;
+    border-radius:20px;
+    padding:3px 11px;
   }
-  .section[open] .card{animation:rise .45s ease both}
-  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-  .card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
-  .brand{font-family:var(--display);font-weight:600;font-size:22px;line-height:1.1;letter-spacing:-.01em}
-  .src{font-size:11px;color:var(--ink-soft);margin-top:3px;letter-spacing:.02em}
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+    gap:18px;
+  }
 
+  /* Card */
+  .card{
+    background:var(--paper);
+    border:1px solid var(--rule);
+    padding:20px 20px 18px;
+    position:relative;
+  }
+  .card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:6px;
+  }
+  .brand{
+    font-size:19px;
+    letter-spacing:.01em;
+  }
   .tag{
-    flex:none;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-    padding:5px 9px;border-radius:2px;white-space:nowrap;
+    font-size:10px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    padding:3px 9px;
+    border-radius:2px;
+    white-space:nowrap;
+    margin-left:10px;
   }
+  .s-act{background:var(--act-bg);color:var(--act);}
+  .s-won{background:var(--won-bg);color:var(--won);}
+  .s-wait{background:var(--wait-bg);color:var(--wait);}
+  .s-gift{background:var(--gift-bg);color:var(--gift);}
+  .s-done{background:var(--done-bg);color:var(--done);}
 
-  .money{font-family:var(--display);font-weight:600;font-size:19px;margin:2px 0 12px}
-  .money .credit{font-size:13px;color:var(--ink-soft);font-weight:400}
-  .money.tbd{color:var(--ink-soft);font-style:italic;font-size:16px}
-
-  .meta{border-top:1px solid var(--rule);padding-top:11px;margin-top:auto}
-  .row{display:flex;gap:8px;font-size:13px;margin-bottom:6px}
-  .row:last-child{margin-bottom:0}
-  .row .k{
-    flex:none;width:74px;color:var(--ink-soft);
-    font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding-top:1px;
+  .contact{
+    font-size:12px;
+    color:var(--ink-soft);
+    font-style:italic;
+    margin-bottom:14px;
   }
-  .row .v{color:var(--ink)}
-  .row .v.next{font-weight:600}
-  .row .v.due{font-weight:600}
-  .s-won .v.due,.s-wait .v.due{color:var(--wait-ink)}
-  .row.deadline .k{color:var(--wait-ink)}
-  .row.live-note .k{color:var(--plum)}
-  .row.live-note .v{font-style:italic;color:var(--plum)}
-
-  .s-won{border-left-color:var(--won-ink)}
-  .s-won .tag{background:var(--won-bg);color:var(--won-ink)}
-  .s-wait{border-left-color:var(--wait-ink)}
-  .s-wait .tag{background:var(--wait-bg);color:var(--wait-ink)}
-  .s-act{border-left-color:var(--act-ink)}
-  .s-act .tag{background:var(--act-bg);color:var(--act-ink)}
-  .s-act .v.next{color:var(--act-ink)}
-  .s-gift{border-left-color:var(--gift-ink)}
-  .s-gift .tag{background:var(--gift-bg);color:var(--gift-ink)}
-  .s-done{border-left-color:var(--done-ink)}
-  .s-done .tag{background:var(--done-bg);color:var(--done-ink)}
+  .money{
+    font-size:15px;
+    color:var(--gold);
+    margin-bottom:8px;
+  }
+  .row{
+    font-size:12.5px;
+    line-height:1.5;
+    margin-bottom:6px;
+    color:var(--ink);
+  }
+  .row .label{
+    text-transform:uppercase;
+    font-size:9.5px;
+    letter-spacing:.1em;
+    color:var(--ink-soft);
+    display:block;
+    margin-bottom:1px;
+  }
+  .row:last-child{margin-bottom:0;}
 
   footer{
-    margin-top:44px;padding-top:18px;border-top:1px solid var(--rule);
-    font-size:12px;color:var(--ink-soft);line-height:1.7;
-  }
-  footer b{color:var(--ink);font-weight:600}
-
-  @media(prefers-reduced-motion:reduce){
-    .section[open] .card{animation:none}
-    .chev{transition:none}
+    text-align:center;
+    font-size:11px;
+    color:var(--ink-soft);
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    margin-top:20px;
   }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <header class="mast">
-    <div class="eyebrow">Brand Collaborations · Pipeline</div>
-    <h1>Project <em>Board</em></h1>
-    <div class="asof">State of play as of <b id="asof-date">July 19, 2026</b> · collaborate@miaomalley.com</div>
-  </header>
-
-  <section class="ledger" aria-label="Pipeline totals">
-    <div class="cell"><div class="lab">Cash booked</div><div class="fig">$9,000</div><div class="sub">+ $599 product credit</div></div>
-    <div class="cell"><div class="lab">Cash in play</div><div class="fig">$4,000</div><div class="sub">quoted, awaiting brands</div></div>
-    <div class="cell"><div class="lab">Live projects</div><div class="fig">10</div><div class="sub">excludes cold outreach</div></div>
-    <div class="cell"><div class="lab">Awaiting you</div><div class="fig">3</div><div class="sub">your reply or next move</div></div>
-  </section>
-
-  <div class="toolbar">
-    <div class="live" id="live-status">Checking collaborate@miaomalley.com for newer activity…</div>
-    <div class="actions">
-      <button type="button" onclick="document.querySelectorAll('details.section').forEach(d=>d.open=true)">Expand all</button>
-      <button type="button" onclick="document.querySelectorAll('details.section').forEach(d=>d.open=false)">Collapse all</button>
-      <button type="button" id="draft-btn" onclick="draftAwaitingReplies()">Draft replies</button>
+  <div class="masthead">
+    <p class="kicker">Colormatics · Creator Business</p>
+    <h1 class="title">Mia O'Malley</h1>
+    <p class="subtitle">Brand Partnership Pipeline — collaborate@miaomalley.com</p>
+    <div class="meta-line">
+      <span>10 active threads</span>
+      <span>Updated July 20, 2026</span>
     </div>
   </div>
-  <div class="draft-status" id="draft-status"></div>
 
-  <!-- ===== AWAITING MIA (top) ===== -->
-  <details class="section" id="awaiting-section" open>
-    <summary class="sec-head">
-      <span class="chev"></span>
-      <h2>Awaiting your reply</h2><span class="count">3</span>
-      <span class="line"></span><span class="hint">Ball in your court</span>
-    </summary>
+  <div class="ledger">
+    <div class="ledger-cell">
+      <div class="ledger-label">Cash Booked</div>
+      <div class="ledger-value">$9,000</div>
+      <div class="ledger-sub">+ $599 product credit</div>
+    </div>
+    <div class="ledger-cell">
+      <div class="ledger-label">Cash In Play</div>
+      <div class="ledger-value">$4,000</div>
+      <div class="ledger-sub">Lands End, awaiting greenlight</div>
+    </div>
+    <div class="ledger-cell">
+      <div class="ledger-label">Live Projects</div>
+      <div class="ledger-value">2</div>
+      <div class="ledger-sub">Stitch Fix · Adrianna Papell</div>
+    </div>
+    <div class="ledger-cell">
+      <div class="ledger-label">Awaiting Reply</div>
+      <div class="ledger-value">4</div>
+      <div class="ledger-sub">Threads needing a Mia reply</div>
+    </div>
+  </div>
+
+  <!-- AWAITING YOUR REPLY -->
+  <div class="section">
+    <div class="section-head">
+      <h2>Awaiting Your Reply</h2>
+      <div class="rule"></div>
+      <span class="count-badge">4</span>
+    </div>
     <div class="grid">
 
-      <article class="card s-act" data-query="LetsJoli Nancy Niu" data-in="collaborate@miaomalley.com" data-brand="LetsJoli">
-        <div class="top">
-          <div><div class="brand">LetsJoli</div><div class="src">Direct · Nancy Niu</div></div>
-          <div class="tag">New offer</div>
+      <div class="card">
+        <div class="card-top">
+          <span class="brand">Honeylove</span>
+          <span class="tag s-act">Awaiting your reply</span>
         </div>
-        <div class="money">$100 <span class="credit">for 2 styles</span></div>
-        <div class="meta">
-          <div class="row"><span class="k">Scope</span><span class="v">Two Amazon bra styles, samples first. Product retails under $20</span></div>
-          <div class="row live-last"><span class="k">Last in</span><span class="v">Nancy Niu · Jul 17 (offer, unanswered)</span></div>
-          <div class="row"><span class="k">Next</span><span class="v next">Decide: accept the sample-first path, counter, or pass</span></div>
-        </div>
-      </article>
+        <div class="contact">Lou Donovan, Head of Partnerships · lou@honeylove.com</div>
+        <div class="money">$750 for 10 videos / month</div>
+        <div class="row"><span class="label">Scope</span>TikTok Shop, CrossOver Bra, 1-year Meta usage rights included</div>
+        <div class="row"><span class="label">Last in</span>Lou Donovan, Jul 14 — sent the offer above, moved conversation from TikTok to email</div>
+        <div class="row"><span class="label">Next</span>Counter — $75/video is low for the volume; ask if there's room to move or shrink the monthly count</div>
+      </div>
 
-      <article class="card s-act" data-query="Tommy Hilfiger Shoplooks Rosanna Bahfen" data-in="collaborate@miaomalley.com" data-brand="Tommy Hilfiger">
-        <div class="top">
-          <div><div class="brand">Tommy Hilfiger</div><div class="src">Network · Shoplooks · Rosanna Bahfen</div></div>
-          <div class="tag">No reply yet</div>
+      <div class="card">
+        <div class="card-top">
+          <span class="brand">Tommy Hilfiger</span>
+          <span class="tag s-act">Awaiting your reply</span>
         </div>
-        <div class="money tbd">Paid, no number given</div>
-        <div class="meta">
-          <div class="row"><span class="k">Scope</span><span class="v">Unspecified. They offered to send details on request</span></div>
-          <div class="row live-last"><span class="k">Last in</span><span class="v">Rosanna Bahfen · Jun 23 (unanswered)</span></div>
-          <div class="row"><span class="k">Next</span><span class="v next">One line back asking for the budget and deliverables</span></div>
-        </div>
-      </article>
+        <div class="contact">Rosanna Bahfen, Creator Partnerships (Shoplooks) · rosanna.bahfen@shoplooks.com</div>
+        <div class="money">Rate not yet stated</div>
+        <div class="row"><span class="label">Scope</span>Paid collaboration via Shoplooks creator network, details withheld pending interest</div>
+        <div class="row"><span class="label">Last in</span>Rosanna Bahfen, Jun 23 — teased a paid campaign, offered to share deliverables and comp if interested</div>
+        <div class="row"><span class="label">Next</span>Reply with interest, ask for deliverables and rate before going further</div>
+      </div>
 
-      <article class="card s-act" data-query="BloomChic Keira" data-in="collaborate@miaomalley.com" data-brand="BloomChic">
-        <div class="top">
-          <div><div class="brand">BloomChic</div><div class="src">Direct · Keira</div></div>
-          <div class="tag">Follow up</div>
+      <div class="card">
+        <div class="card-top">
+          <span class="brand">Modlily</span>
+          <span class="tag s-act">Awaiting your reply</span>
         </div>
-        <div class="money tbd">Paid, no number given</div>
-        <div class="meta">
-          <div class="row"><span class="k">Scope</span><span class="v">To be defined. Lookbook sent, brand asked for a call. Strong size-inclusive fit</span></div>
-          <div class="row live-last"><span class="k">Last out</span><span class="v">You · Jun 18 · no reply in 31 days</span></div>
-          <div class="row"><span class="k">Next</span><span class="v next">Send a short follow-up. Note: has lowballed before</span></div>
+        <div class="contact">Rachel Kerr, PR Team · rachel@modlily.com</div>
+        <div class="money">Rate not stated (gifting pitch)</div>
+        <div class="row"><span class="label">Scope</span>Facebook try-on Reel, swimwear or dresses, possible long-term partnership if it goes well</div>
+        <div class="row"><span class="label">Last in</span>Rachel Kerr, Jul 15 — invited for a Facebook collab</div>
+        <div class="row"><span class="label">Next</span>Reply with interest, ask compensation structure and whether Mia selects items</div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <span class="brand">Modelones</span>
+          <span class="tag s-act">Awaiting your reply</span>
         </div>
-      </article>
+        <div class="contact">Will, PR Team · pr@modelones.com</div>
+        <div class="money">Rate not stated (gifting pitch)</div>
+        <div class="row"><span class="label">Scope</span>Press-on nails, format unspecified</div>
+        <div class="row"><span class="label">Last in</span>PR Modelones, Jul 15 — second follow-up nudge, no terms offered yet</div>
+        <div class="row"><span class="label">Next</span>Low priority — reply only if there's bandwidth, no cash mentioned so far</div>
+      </div>
 
     </div>
-  </details>
+  </div>
 
-  <!-- ===== WON ===== -->
-  <details class="section" open>
-    <summary class="sec-head">
-      <span class="chev"></span>
-      <h2>Won &amp; in production</h2><span class="count">2</span><span class="line"></span>
-    </summary>
+  <!-- QUOTED, AWAITING BRAND -->
+  <div class="section">
+    <div class="section-head">
+      <h2>Quoted — Awaiting Brand</h2>
+      <div class="rule"></div>
+      <span class="count-badge">3</span>
+    </div>
     <div class="grid">
 
-      <article class="card s-won" data-query="Stitch Fix Drew Hallman contract" data-in="collaborate@miaomalley.com">
-        <div class="top">
-          <div><div class="brand">Stitch Fix</div><div class="src">Direct · repeat client · Drew Hallman</div></div>
-          <div class="tag">Closed</div>
+      <div class="card">
+        <div class="card-top">
+          <span class="brand">Lands' End</span>
+          <span class="tag s-wait">Quoted, pending greenlight</span>
         </div>
-        <div class="money">$8,000 <span class="credit">+ $599 credit</span></div>
-        <div class="meta">
-          <div class="row"><span class="k">Scope</span><span class="v">3 UGC videos, 10 live photos, 5 stills, 5 GIFs · 1yr organic + paid</span></div>
-          <div class="row live-last"><span class="k">Last in</span><span class="v">Drew Hallman · Jul 17</span></div>
-          <div class="row"><span class="k">Next</span><span class="v next">Watch for the contract from their legal team, sign before Drew is out July 30</span></div>
-        </div>
-      </article>
+        <div class="contact">Avery Turk, Village Marketing · avery.turk@villagemarketing.com</div>
+        <div class="money">$4,000 quoted</div>
+        <div class="row"><span class="label">Scope</span>Video content across 3 aspect ratios for Lands End Content Collective, transitional summer-to-fall pieces</div>
+        <div class="row"><span class="label">Last in</span>Avery Turk, Jul 17 — waiting on final green light from the brand, expects word early next week</div>
+        <div class="row"><span class="label">Next</span>Sit tight; follow up if nothing arrives by midweek</div>
+      </div>
 
-      <article class="card s-won" data-query="Adrianna Papell Julia Wulff" data-in="collaborate@miaomalley.com">
-        <div class="top">
-          <div><div class="brand">Adrianna Papell</div><div class="src">Direct · Julia Wulff</div></div>
-          <div class="tag">Closed</div>
+      <div class="card">
+        <div class="card-top">
+          <span class="brand">LetsJoli</span>
+          <span class="tag s-wait">Quoted, awaiting answer</span>
         </div>
-        <div class="money">$1,000 <span class="credit">+ 4 dresses gifted</span></div>
-        <div class="meta">
-          <div class="row"><span class="k">Scope</span><span class="v">Undefined. Dresses ship early to mid August</span></div>
-          <div class="row live-last"><span class="k">Last in</span><span class="v">Julia Wulff · Jul 9</span></div>
-          <div class="row deadline"><span class="k">Due</span><span class="v due">Content live end of August</span></div>
-          <div class="row"><span class="k">Next</span><span class="v next">Confirm exact deliverables with Julia before the dresses arrive</span></div>
+        <div class="contact">Nancy Niu, Influencer Marketing Specialist · nancy@letsjoli.com</div>
+        <div class="money">Gifting only so far (bras under $20 each)</div>
+        <div class="row"><span class="label">Scope</span>Amazon bralette line, try-on Reel</div>
+        <div class="row"><span class="label">Last in</span>Nancy Niu, Jul 17 — resent the original pitch, has not yet answered Mia's compensation/selection questions</div>
+        <div class="row"><span class="label">Next</span>Nudge again for a straight answer on comp structure and item selection</div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <span class="brand">BloomChic</span>
+          <span class="tag s-wait">Gone quiet</span>
         </div>
-      </article>
+        <div class="contact">Keira, KOL Team · kol03@bloomchic.com</div>
+        <div class="money">Held at $1,000/video · brand capped at $250–300</div>
+        <div class="row"><span class="label">Scope</span>3-video bundle, ad usage, repeat lowball attempts</div>
+        <div class="row"><span class="label">Last in</span>Keira, Mar 16 — offered $300 for 3 videos plus flexible usage; Mia held firm and closed the thread</div>
+        <div class="row"><span class="label">Next</span>None — gap too wide, revisit only if brand returns with a real budget</div>
+      </div>
 
     </div>
-  </details>
+  </div>
 
-  <!-- ===== AWAITING BRAND ===== -->
-  <details class="section" open>
-    <summary class="sec-head">
-      <span class="chev"></span>
-      <h2>Quoted · waiting on the brand</h2><span class="count">2</span><span class="line"></span>
-    </summary>
+  <!-- WON / IN PRODUCTION -->
+  <div class="section">
+    <div class="section-head">
+      <h2>Won — In Production</h2>
+      <div class="rule"></div>
+      <span class="count-badge">2</span>
+    </div>
     <div class="grid">
 
-      <article class="card s-wait" data-query="Lands End Village Marketing Avery Turk" data-in="collaborate@miaomalley.com">
-        <div class="top">
-          <div><div class="brand">Lands End</div><div class="src">Agency · Village Marketing · Avery Turk</div></div>
-          <div class="tag">With brand</div>
+      <div class="card">
+        <div class="card-top">
+          <span class="brand">Stitch Fix</span>
+          <span class="tag s-won">Won — expansion accepted</span>
         </div>
-        <div class="money">$4,000 <span class="credit">quoted</span></div>
-        <div class="meta">
-          <div class="row"><span class="k">Scope</span><span class="v">4 vertical videos, 3 aspect ratios each · 12 weeks paid + allowlisting</span></div>
-          <div class="row live-last"><span class="k">Last in</span><span class="v">Avery Turk · Jul 17</span></div>
-          <div class="row"><span class="k">Next</span><span class="v">Brand green light expected the week of July 21. Third aspect ratio still unconfirmed</span></div>
-        </div>
-      </article>
+        <div class="contact">Drew Hallman, Social Projects Manager · drew.hallman@stitchfix.com</div>
+        <div class="money">$8,000 cash + $599 credit</div>
+        <div class="row"><span class="label">Scope</span>3 UGC videos, 10 live photos, 1-year organic + paid usage (Fall/Early Holiday campaign, expanded scope)</div>
+        <div class="row"><span class="label">Last in</span>Drew Hallman, Jul 17 — sent finalized brief including a direct-to-camera speaking integration</div>
+        <div class="row"><span class="label">Next</span>Confirm contract terms and lock the shoot timeline</div>
+      </div>
 
-      <article class="card s-wait" data-query="Honeylove Lou Donovan TikTok Shop" data-in="collaborate@miaomalley.com">
-        <div class="top">
-          <div><div class="brand">Honeylove</div><div class="src">Direct · Lou Donovan</div></div>
-          <div class="tag">Countered</div>
+      <div class="card">
+        <div class="card-top">
+          <span class="brand">Adrianna Papell</span>
+          <span class="tag s-won">Won — in production</span>
         </div>
-        <div class="money tbd">Countered up from $750/mo</div>
-        <div class="meta">
-          <div class="row"><span class="k">Scope</span><span class="v">10 TikTok Shop videos/mo. Mia offered one extra IG video for a higher rate</span></div>
-          <div class="row live-last"><span class="k">Last in</span><span class="v">Lou Donovan · Jul 14</span></div>
-          <div class="row"><span class="k">Next</span><span class="v">Waiting on Lou's response to the counter</span></div>
-        </div>
-      </article>
+        <div class="contact">Julia Wulff, Social Media & Influencer Strategist · jwulff@adriannapapell.com</div>
+        <div class="money">$1,000 · 60-day usage</div>
+        <div class="row"><span class="label">Scope</span>Styled dress feature from Summer Collection, 5 dresses selected, size 18–20</div>
+        <div class="row"><span class="label">Last in</span>Julia Wulff, Jul 9 — dresses on pre-order, shipping early/mid August, content to go live end of August</div>
+        <div class="row"><span class="label">Next</span>Watch for shipping/tracking update, plan content for late August</div>
+      </div>
 
     </div>
-  </details>
+  </div>
 
-  <!-- ===== GIFTED ===== -->
-  <details class="section" open>
-    <summary class="sec-head">
-      <span class="chev"></span>
-      <h2>Gifted · in motion</h2><span class="count">2</span><span class="line"></span>
-    </summary>
+  <!-- COMPLETED -->
+  <div class="section">
+    <div class="section-head">
+      <h2>Completed</h2>
+      <div class="rule"></div>
+      <span class="count-badge">1</span>
+    </div>
     <div class="grid">
 
-      <article class="card s-gift" data-query="Modlily Rachel Kerr" data-in="collaborate@miaomalley.com">
-        <div class="top">
-          <div><div class="brand">Modlily</div><div class="src">Direct · Rachel Kerr</div></div>
-          <div class="tag">Gifted</div>
+      <div class="card">
+        <div class="card-top">
+          <span class="brand">Quince</span>
+          <span class="tag s-done">Completed</span>
         </div>
-        <div class="money tbd">Compensation TBD</div>
-        <div class="meta">
-          <div class="row"><span class="k">Scope</span><span class="v">Facebook collab, try-on talking Reel. Mia asked about pay structure and item choice</span></div>
-          <div class="row live-last"><span class="k">Last in</span><span class="v">Rachel Kerr · Jul 15</span></div>
-          <div class="row"><span class="k">Next</span><span class="v">Waiting on Rachel's answer on compensation</span></div>
-        </div>
-      </article>
-
-      <article class="card s-gift" data-query="Modelones press-on nails" data-in="collaborate@miaomalley.com">
-        <div class="top">
-          <div><div class="brand">Modelones</div><div class="src">Direct · Will (PR)</div></div>
-          <div class="tag">Gifted</div>
-        </div>
-        <div class="money tbd">Gifted, no cash</div>
-        <div class="meta">
-          <div class="row"><span class="k">Scope</span><span class="v">Press-on nails. Mia picked two products, asked what is expected in return</span></div>
-          <div class="row live-last"><span class="k">Last in</span><span class="v">Will (PR) · Jul 15</span></div>
-          <div class="row"><span class="k">Next</span><span class="v">Waiting on their next steps and deliverable ask</span></div>
-        </div>
-      </article>
+        <div class="contact">Lily Goldberg, Influencer Marketing · lily.goldberg@onequince.com</div>
+        <div class="money">Gifted product, no cash</div>
+        <div class="row"><span class="label">Scope</span>1 IG Story + 1 IG in-feed Reel, European Linen Fit &amp; Flare Midi Dress</div>
+        <div class="row"><span class="label">Last in</span>GRIN notification, Jul 7 — Quince approved the submitted content</div>
+        <div class="row"><span class="label">Next</span>None — campaign closed out</div>
+      </div>
 
     </div>
-  </details>
+  </div>
 
-  <!-- ===== COMPLETE ===== -->
-  <details class="section">
-    <summary class="sec-head">
-      <span class="chev"></span>
-      <h2>Complete</h2><span class="count">1</span><span class="line"></span>
-    </summary>
-    <div class="grid">
-
-      <article class="card s-done" data-query="Quince GRIN Lily Goldberg" data-in="collaborate@miaomalley.com">
-        <div class="top">
-          <div><div class="brand">Quince</div><div class="src">Direct · via GRIN · Lily Goldberg</div></div>
-          <div class="tag">Delivered</div>
-        </div>
-        <div class="money tbd">Gifted + affiliate code</div>
-        <div class="meta">
-          <div class="row"><span class="k">Scope</span><span class="v">1 IG story + 1 in-feed post. Content approved July 7</span></div>
-          <div class="row live-last"><span class="k">Last in</span><span class="v">GRIN · Jul 9 (metrics request)</span></div>
-          <div class="row"><span class="k">Next</span><span class="v next">Send GRIN the Instagram metrics it requested, then close out</span></div>
-        </div>
-      </article>
-
-    </div>
-  </details>
-
-  <footer>
-    <b>Reading this board.</b> Awaiting your reply sits on top and holds two things: brands that wrote last and need an answer, and threads where you wrote last but the brand has gone quiet for more than seven days, tagged Follow up. Cash booked counts only signed or agreed deals. Cash in play is quoted and sitting with the brand. Cold outreach and gifting-only pitches Mia has not engaged are left off so the live work stays visible.<br>
-    <b>Two dates that matter.</b> Stitch Fix contact Drew is out July 30 and 31, so the contract should land before then. Adrianna Papell dresses ship early August, which is the deadline for pinning down that scope.<br>
-    <span id="live-footer-note"></span><br>
-    <b>Drafting replies.</b> The "Draft replies" button above looks up each open thread in the section above, drafts a reply in Mia's voice and rate logic, and saves it to the collaborate@ drafts folder for her to review and send. Nothing is sent automatically.
-  </footer>
-
+  <footer>Refreshed automatically from collaborate@miaomalley.com</footer>
 </div>
-
-<script>
-// Live layer: re-check each thread against collaborate@miaomalley.com so "Last in/out" stays
-// current between manual rebuilds, without touching the card copy or layout above.
-function fmtDate(d) {
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-}
-function daysAgo(dateStr) {
-  const d = new Date(dateStr);
-  if (isNaN(d)) return null;
-  return Math.floor((Date.now() - d.getTime()) / 86400000);
-}
-
-async function refreshCard(card) {
-  const query = card.getAttribute('data-query');
-  const inAcct = card.getAttribute('data-in');
-  try {
-    const res = await window.cowork.callMcpTool('mcp__Spark__search', { query, in: inAcct, page_size: 5 });
-    const raw = res.structuredContent ?? (res.content && res.content[0] && res.content[0].text) ?? '';
-    const text = typeof raw === 'string' ? raw : JSON.stringify(raw);
-    const dateMatches = [...text.matchAll(/Date:\s*([\d-]{10}\s[\d:]{5})/g)].map(m => m[1]);
-    const fromMatches = [...text.matchAll(/From:\s*([^\n<]+)/g)].map(m => m[1].trim());
-    if (!dateMatches.length) return null;
-    // "Last in" must always be the brand's side of the conversation, never Mia's own
-    // sent mail, so any entry sent from collaborate@miaomalley.com is excluded here.
-    let latestIdx = -1, latestTime = 0;
-    dateMatches.forEach((d, i) => {
-      const from = (fromMatches[i] || '').toLowerCase();
-      if (from.includes('collaborate@miaomalley.com')) return;
-      const t = new Date(d).getTime();
-      if (t > latestTime) { latestTime = t; latestIdx = i; }
-    });
-    if (latestIdx === -1) return null; // no inbound message found in these results
-    return { date: new Date(dateMatches[latestIdx]), from: fromMatches[latestIdx] || null };
-  } catch (e) {
-    return null;
-  }
-}
-
-async function main() {
-  const cards = document.querySelectorAll('.card[data-query]');
-  let newestOverall = null;
-  let flaggedNew = 0;
-
-  for (const card of cards) {
-    const result = await refreshCard(card);
-    if (!result || !result.date) continue;
-    if (!newestOverall || result.date > newestOverall) newestOverall = result.date;
-
-    const age = daysAgo(result.date.toISOString());
-    const lastRow = card.querySelector('.row.live-last .v');
-    if (lastRow && age !== null && age <= 1) {
-      // something moved since the static copy above was written
-      lastRow.textContent = (result.from || 'Update') + ' · ' + fmtDate(result.date) + ' (new since board was last written)';
-      lastRow.parentElement.classList.add('live-note');
-      flaggedNew++;
-    }
-  }
-
-  document.getElementById('asof-date').textContent = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-  document.getElementById('live-status').textContent = flaggedNew
-    ? `Checked against live inbox: ${flaggedNew} thread(s) have new activity since this board was written.`
-    : 'Checked against live inbox: no thread activity newer than what is shown below.';
-  document.getElementById('live-footer-note').textContent = flaggedNew
-    ? 'Rows marked in plum moved since this board was drafted and may need re-tiering.'
-    : '';
-}
-
-main();
-
-// ===== Draft replies layer =====
-// Manual only (button click), never on page load, so opening the board never
-// creates drafts by itself. Only touches cards in the "Awaiting your reply" section.
-
-const MIA_GUIDE = `You are drafting a brand-collaboration email reply as Mia O'Malley (collaborate@miaomalley.com). Follow this voice and negotiation guide exactly.
-
-VOICE: Warm and genuinely enthusiastic, not gushing. Direct: asks about compensation, sizing, timelines, shipping plainly in the same message as the enthusiasm. Efficient: 3-6 sentences unless itemizing a rate breakdown. Grateful without groveling. Never corporate phrasing. At most two questions, phrased as curiosity not demand.
-
-STRUCTURE for a first substantive reply: (1) one line of thanks + specific enthusiasm about the product/brand, (2) one to two clarifying questions (compensation structure, item selection, timeline), (3) a short forward-looking closer like "Looking forward to hearing more!", (4) sign-off "Best," or "Thanks," then "Mia". Do NOT add any signature block, name/title lines, social handles, or media kit link after "Mia" — the draft ends right after her name.
-
-FOLLOW-UP (brand gone quiet 7+ days, no re-pitch): short, warm, low-key, e.g. "Circling back on this! Let me know if there's anything you need on my end." Close with something low-pressure, not urgent.
-
-RATES: baseline anchors — single video standard scope $1,500-$2,000 (1-3mo usage, up to 4 story slides + 5 hi-res images); 2 videos + 10 stills, 12mo usage ~$7,000-$7,500 established; custom GIFs cut from existing video free, standalone GIFs $100 each. She quotes a range or top-of-range first, then flexes down only for a real scope reduction, longer usage pushes toward the higher end. Never mentions other brands' rates. Always states the number alongside what it includes, and closes by inviting a budget conversation rather than presenting it as final.
-
-GIFTING-ONLY: acceptable when brand is new, ask is a single piece of content, no paid-usage/whitelisting mentioned. Still ask about deliverables and an affiliate program before agreeing. Template: "Yes, I'd love to! Thank you for reaching out. What are your deliverables and terms for gifting, and do you have an affiliate program I could use?"
-
-Output ONLY the email body as plain text/markdown (no subject line, no explanation, no commentary before or after).`;
-
-function extractThreadEntries(text) {
-  const blocks = text.split(/─{5,}/);
-  const entries = [];
-  for (const block of blocks) {
-    const idM = block.match(/ID:\s*(\d+)/);
-    const subM = block.match(/Subject:\s*(.*)/);
-    const fromM = block.match(/From:\s*(.*)/);
-    const toM = block.match(/To:\s*(.*)/);
-    const dateM = block.match(/Date:\s*([\d-]{10}\s[\d:]{5})/);
-    if (idM && fromM && dateM) {
-      entries.push({
-        id: idM[1],
-        subject: subM ? subM[1].trim() : '',
-        from: fromM[1].trim(),
-        to: toM ? toM[1].trim() : '',
-        date: new Date(dateM[1]),
-        body: block.trim()
-      });
-    }
-  }
-  return entries;
-}
-
-function normalizeSubject(s) {
-  return s.replace(/^(re|fwd?):\s*/i, '').trim().toLowerCase();
-}
-
-// Search results are ranked by relevance, so entries[0] is the search engine's best
-// match for this card's query. We only trust dates within THAT thread (same normalized
-// subject) rather than the single latest-dated email across all 5 loosely related results,
-// which previously let an unrelated same-day email from a different brand win by date alone.
-function latestInboundForThread(entries, brandKeywords) {
-  if (!entries.length) return { target: null, reason: 'no search results' };
-
-  const topSubject = normalizeSubject(entries[0].subject);
-  let threadEntries = entries.filter(e => normalizeSubject(e.subject) === topSubject);
-  if (threadEntries.length < 2) threadEntries = entries; // thread too thin to group, fall back to full set
-
-  const inbound = threadEntries.filter(e => !e.from.toLowerCase().includes('collaborate@miaomalley.com'));
-  const pool = inbound.length ? inbound : threadEntries;
-  const target = pool.reduce((best, e) => (!best || e.date > best.date) ? e : best, null);
-  if (!target) return { target: null, reason: 'no inbound message found' };
-
-  // Sanity check: the chosen message should actually mention the brand somewhere
-  // (subject or sender) — if not, refuse rather than draft to the wrong thread.
-  const haystack = (target.subject + ' ' + target.from + ' ' + target.body).toLowerCase();
-  const matchesBrand = brandKeywords.some(k => k && haystack.includes(k.toLowerCase()));
-  if (!matchesBrand) {
-    return { target: null, reason: `top match (from ${target.from}) doesn't mention "${brandKeywords.join(' / ')}" — refusing to guess` };
-  }
-  return { target, reason: null };
-}
-
-function extractEmail(fromField) {
-  const m = fromField.match(/<([^>]+)>/);
-  return m ? m[1] : fromField.trim();
-}
-
-async function draftOneCard(card) {
-  const note = document.createElement('div');
-  note.className = 'card-draft-note';
-  note.textContent = 'Drafting…';
-  card.appendChild(note);
-
-  const query = card.getAttribute('data-query');
-  const inAcct = card.getAttribute('data-in');
-  const brand = card.getAttribute('data-brand') || query;
-
-  try {
-    const res = await window.cowork.callMcpTool('mcp__Spark__search', { query, in: inAcct, page_size: 5 });
-    const raw = res.structuredContent ?? (res.content && res.content[0] && res.content[0].text) ?? '';
-    const text = typeof raw === 'string' ? raw : JSON.stringify(raw);
-    const entries = extractThreadEntries(text);
-    const brandKeywords = query.split(/\s+/).filter(w => w.length > 2);
-    const { target, reason } = latestInboundForThread(entries, brandKeywords);
-    if (!target) {
-      note.textContent = `Skipped — ${reason}. Check this one by hand.`;
-      return { brand, ok: false };
-    }
-
-    const cardScope = card.querySelector('.row .v')?.textContent || '';
-    const cardNext = card.querySelector('.v.next')?.textContent || '';
-    const cardMoney = card.querySelector('.money')?.textContent.trim() || '';
-
-    const prompt = `${MIA_GUIDE}
-
-BRAND: ${brand}
-CURRENT OFFER / MONEY ON THE TABLE: ${cardMoney}
-BOARD NOTES ON SCOPE: ${cardScope}
-BOARD NOTES ON WHAT MIA NEEDS TO DO NEXT: ${cardNext}
-
-LATEST INBOUND EMAIL TO REPLY TO (from ${target.from}, ${target.date.toDateString()}):
-${target.body}
-
-Draft Mia's reply to this specific email now.`;
-
-    const draftResult = await window.cowork.askClaude(prompt, [text]);
-    const bodyText = typeof draftResult === 'string' ? draftResult : (draftResult?.text || JSON.stringify(draftResult));
-
-    const draftRes = await window.cowork.callMcpTool('mcp__Spark__draft', {
-      account: inAcct,
-      reply_to: target.id,
-      body: bodyText
-    });
-    if (draftRes && draftRes.isError) {
-      note.textContent = 'Draft failed: ' + (draftRes.content?.[0]?.text || 'unknown error');
-      return { brand, ok: false };
-    }
-    note.textContent = 'Draft saved to collaborate@ Drafts, replying to ' + extractEmail(target.from) + '.';
-    return { brand, ok: true };
-  } catch (e) {
-    note.textContent = 'Draft failed: ' + e.message;
-    return { brand, ok: false };
-  }
-}
-
-async function draftAwaitingReplies() {
-  const btn = document.getElementById('draft-btn');
-  const status = document.getElementById('draft-status');
-  const section = document.getElementById('awaiting-section');
-  const cards = section.querySelectorAll('.card[data-query]');
-
-  btn.disabled = true;
-  section.querySelectorAll('.card-draft-note').forEach(n => n.remove());
-  status.classList.remove('err');
-  status.textContent = `Drafting replies for ${cards.length} thread(s)…`;
-
-  let okCount = 0;
-  for (const card of cards) {
-    const r = await draftOneCard(card);
-    if (r.ok) okCount++;
-  }
-
-  status.textContent = okCount
-    ? `${okCount} of ${cards.length} draft(s) saved to the collaborate@ Drafts folder. Review before sending.`
-    : 'No drafts were saved — see notes on each card above.';
-  if (!okCount) status.classList.add('err');
-  btn.disabled = false;
-}
-</script>
 </body>
 </html>
