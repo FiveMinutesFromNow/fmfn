@@ -1,4 +1,18 @@
 <!DOCTYPE html>
+<script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Mo Pipeline Board",
+  "schemaVersion": 1,
+  "description": "Mia O'Malley brand pipeline board, pulled live from collaborate@miaomalley.com via Spark search on each open. No Google Sheet dependency. Includes a manual 'Draft replies' action that drafts responses to open threads in Mia's voice using her rate/negotiation guide, saved to the collaborate@ drafts folder via Spark.",
+  "mcpTools": [
+    "mcp__Spark__search",
+    "mcp__Spark__draft"
+  ],
+  "mcpServerNames": [
+    "Spark"
+  ]
+}
+</script>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -9,6 +23,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
+    color-scheme: light;
     --paper:#ECE5DF;
     --paper-2:#F3EDE8;
     --ink:#231B1F;
@@ -39,7 +54,6 @@
 
   .wrap{max-width:1080px;margin:0 auto}
 
-  /* ---------- masthead ---------- */
   .mast{
     border-bottom:2px solid var(--ink);
     padding-bottom:22px;
@@ -61,7 +75,6 @@
   .asof{font-size:13px;color:var(--ink-soft);letter-spacing:.02em}
   .asof b{color:var(--ink);font-weight:600}
 
-  /* ---------- ledger ---------- */
   .ledger{
     display:grid;grid-template-columns:repeat(4,1fr);
     gap:1px;background:var(--rule);border:1px solid var(--rule);
@@ -80,11 +93,15 @@
   .cell .sub{font-size:12px;color:var(--ink-soft);margin-top:3px}
   @media(max-width:640px){.ledger{grid-template-columns:repeat(2,1fr)}}
 
-  /* toolbar */
   .toolbar{
-    display:flex;justify-content:flex-end;gap:14px;
-    margin-bottom:18px;
+    display:flex;justify-content:space-between;align-items:center;gap:14px;
+    margin-bottom:8px;
+    flex-wrap:wrap;
   }
+  .toolbar .live{
+    font-size:11px;color:var(--ink-soft);letter-spacing:.04em;
+  }
+  .toolbar .actions{display:flex;gap:14px;flex-wrap:wrap}
   .toolbar button{
     font-family:var(--util);font-size:12px;font-weight:600;
     letter-spacing:.08em;text-transform:uppercase;
@@ -92,8 +109,17 @@
     cursor:pointer;padding:4px 2px;
   }
   .toolbar button:hover{color:var(--plum)}
+  .toolbar button:disabled{opacity:.4;cursor:default}
+  .toolbar button#draft-btn{color:var(--plum);border-bottom:1px solid var(--plum)}
 
-  /* ---------- accordion section ---------- */
+  .draft-status{font-size:11px;color:var(--ink-soft);letter-spacing:.02em;margin-bottom:18px;min-height:14px}
+  .draft-status.err{color:var(--act-ink)}
+
+  .card-draft-note{
+    margin-top:8px;padding-top:8px;border-top:1px dashed var(--rule);
+    font-size:11.5px;color:var(--plum);font-style:italic;
+  }
+
   .section{
     margin-bottom:14px;
     border-bottom:1px solid var(--rule);
@@ -122,7 +148,6 @@
     color:var(--act-ink);
   }
 
-  /* ---------- cards ---------- */
   .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
   @media(max-width:720px){.grid{grid-template-columns:1fr}}
 
@@ -161,6 +186,8 @@
   .row .v.due{font-weight:600}
   .s-won .v.due,.s-wait .v.due{color:var(--wait-ink)}
   .row.deadline .k{color:var(--wait-ink)}
+  .row.live-note .k{color:var(--plum)}
+  .row.live-note .v{font-style:italic;color:var(--plum)}
 
   .s-won{border-left-color:var(--won-ink)}
   .s-won .tag{background:var(--won-bg);color:var(--won-ink)}
@@ -192,7 +219,7 @@
   <header class="mast">
     <div class="eyebrow">Brand Collaborations · Pipeline</div>
     <h1>Project <em>Board</em></h1>
-    <div class="asof">State of play as of <b>July 19, 2026</b> · collaborate@miaomalley.com</div>
+    <div class="asof">State of play as of <b id="asof-date">July 19, 2026</b> · collaborate@miaomalley.com</div>
   </header>
 
   <section class="ledger" aria-label="Pipeline totals">
@@ -203,12 +230,17 @@
   </section>
 
   <div class="toolbar">
-    <button type="button" onclick="document.querySelectorAll('details.section').forEach(d=>d.open=true)">Expand all</button>
-    <button type="button" onclick="document.querySelectorAll('details.section').forEach(d=>d.open=false)">Collapse all</button>
+    <div class="live" id="live-status">Checking collaborate@miaomalley.com for newer activity…</div>
+    <div class="actions">
+      <button type="button" onclick="document.querySelectorAll('details.section').forEach(d=>d.open=true)">Expand all</button>
+      <button type="button" onclick="document.querySelectorAll('details.section').forEach(d=>d.open=false)">Collapse all</button>
+      <button type="button" id="draft-btn" onclick="draftAwaitingReplies()">Draft replies</button>
+    </div>
   </div>
+  <div class="draft-status" id="draft-status"></div>
 
   <!-- ===== AWAITING MIA (top) ===== -->
-  <details class="section" open>
+  <details class="section" id="awaiting-section" open>
     <summary class="sec-head">
       <span class="chev"></span>
       <h2>Awaiting your reply</h2><span class="count">3</span>
@@ -216,7 +248,7 @@
     </summary>
     <div class="grid">
 
-      <article class="card s-act">
+      <article class="card s-act" data-query="LetsJoli Nancy Niu" data-in="collaborate@miaomalley.com" data-brand="LetsJoli">
         <div class="top">
           <div><div class="brand">LetsJoli</div><div class="src">Direct · Nancy Niu</div></div>
           <div class="tag">New offer</div>
@@ -224,12 +256,12 @@
         <div class="money">$100 <span class="credit">for 2 styles</span></div>
         <div class="meta">
           <div class="row"><span class="k">Scope</span><span class="v">Two Amazon bra styles, samples first. Product retails under $20</span></div>
-          <div class="row"><span class="k">Last in</span><span class="v">Nancy Niu · Jul 17 (offer, unanswered)</span></div>
+          <div class="row live-last"><span class="k">Last in</span><span class="v">Nancy Niu · Jul 17 (offer, unanswered)</span></div>
           <div class="row"><span class="k">Next</span><span class="v next">Decide: accept the sample-first path, counter, or pass</span></div>
         </div>
       </article>
 
-      <article class="card s-act">
+      <article class="card s-act" data-query="Tommy Hilfiger Shoplooks Rosanna Bahfen" data-in="collaborate@miaomalley.com" data-brand="Tommy Hilfiger">
         <div class="top">
           <div><div class="brand">Tommy Hilfiger</div><div class="src">Network · Shoplooks · Rosanna Bahfen</div></div>
           <div class="tag">No reply yet</div>
@@ -237,12 +269,12 @@
         <div class="money tbd">Paid, no number given</div>
         <div class="meta">
           <div class="row"><span class="k">Scope</span><span class="v">Unspecified. They offered to send details on request</span></div>
-          <div class="row"><span class="k">Last in</span><span class="v">Rosanna Bahfen · Jun 23 (unanswered)</span></div>
+          <div class="row live-last"><span class="k">Last in</span><span class="v">Rosanna Bahfen · Jun 23 (unanswered)</span></div>
           <div class="row"><span class="k">Next</span><span class="v next">One line back asking for the budget and deliverables</span></div>
         </div>
       </article>
 
-      <article class="card s-act">
+      <article class="card s-act" data-query="BloomChic Keira" data-in="collaborate@miaomalley.com" data-brand="BloomChic">
         <div class="top">
           <div><div class="brand">BloomChic</div><div class="src">Direct · Keira</div></div>
           <div class="tag">Follow up</div>
@@ -250,7 +282,7 @@
         <div class="money tbd">Paid, no number given</div>
         <div class="meta">
           <div class="row"><span class="k">Scope</span><span class="v">To be defined. Lookbook sent, brand asked for a call. Strong size-inclusive fit</span></div>
-          <div class="row"><span class="k">Last out</span><span class="v">You · Jun 18 · no reply in 31 days</span></div>
+          <div class="row live-last"><span class="k">Last out</span><span class="v">You · Jun 18 · no reply in 31 days</span></div>
           <div class="row"><span class="k">Next</span><span class="v next">Send a short follow-up. Note: has lowballed before</span></div>
         </div>
       </article>
@@ -266,7 +298,7 @@
     </summary>
     <div class="grid">
 
-      <article class="card s-won">
+      <article class="card s-won" data-query="Stitch Fix Drew Hallman contract" data-in="collaborate@miaomalley.com">
         <div class="top">
           <div><div class="brand">Stitch Fix</div><div class="src">Direct · repeat client · Drew Hallman</div></div>
           <div class="tag">Closed</div>
@@ -274,12 +306,12 @@
         <div class="money">$8,000 <span class="credit">+ $599 credit</span></div>
         <div class="meta">
           <div class="row"><span class="k">Scope</span><span class="v">3 UGC videos, 10 live photos, 5 stills, 5 GIFs · 1yr organic + paid</span></div>
-          <div class="row"><span class="k">Last in</span><span class="v">Drew Hallman · Jul 17</span></div>
+          <div class="row live-last"><span class="k">Last in</span><span class="v">Drew Hallman · Jul 17</span></div>
           <div class="row"><span class="k">Next</span><span class="v next">Watch for the contract from their legal team, sign before Drew is out July 30</span></div>
         </div>
       </article>
 
-      <article class="card s-won">
+      <article class="card s-won" data-query="Adrianna Papell Julia Wulff" data-in="collaborate@miaomalley.com">
         <div class="top">
           <div><div class="brand">Adrianna Papell</div><div class="src">Direct · Julia Wulff</div></div>
           <div class="tag">Closed</div>
@@ -287,7 +319,7 @@
         <div class="money">$1,000 <span class="credit">+ 4 dresses gifted</span></div>
         <div class="meta">
           <div class="row"><span class="k">Scope</span><span class="v">Undefined. Dresses ship early to mid August</span></div>
-          <div class="row"><span class="k">Last in</span><span class="v">Julia Wulff · Jul 9</span></div>
+          <div class="row live-last"><span class="k">Last in</span><span class="v">Julia Wulff · Jul 9</span></div>
           <div class="row deadline"><span class="k">Due</span><span class="v due">Content live end of August</span></div>
           <div class="row"><span class="k">Next</span><span class="v next">Confirm exact deliverables with Julia before the dresses arrive</span></div>
         </div>
@@ -304,7 +336,7 @@
     </summary>
     <div class="grid">
 
-      <article class="card s-wait">
+      <article class="card s-wait" data-query="Lands End Village Marketing Avery Turk" data-in="collaborate@miaomalley.com">
         <div class="top">
           <div><div class="brand">Lands End</div><div class="src">Agency · Village Marketing · Avery Turk</div></div>
           <div class="tag">With brand</div>
@@ -312,12 +344,12 @@
         <div class="money">$4,000 <span class="credit">quoted</span></div>
         <div class="meta">
           <div class="row"><span class="k">Scope</span><span class="v">4 vertical videos, 3 aspect ratios each · 12 weeks paid + allowlisting</span></div>
-          <div class="row"><span class="k">Last in</span><span class="v">Avery Turk · Jul 17</span></div>
+          <div class="row live-last"><span class="k">Last in</span><span class="v">Avery Turk · Jul 17</span></div>
           <div class="row"><span class="k">Next</span><span class="v">Brand green light expected the week of July 21. Third aspect ratio still unconfirmed</span></div>
         </div>
       </article>
 
-      <article class="card s-wait">
+      <article class="card s-wait" data-query="Honeylove Lou Donovan TikTok Shop" data-in="collaborate@miaomalley.com">
         <div class="top">
           <div><div class="brand">Honeylove</div><div class="src">Direct · Lou Donovan</div></div>
           <div class="tag">Countered</div>
@@ -325,7 +357,7 @@
         <div class="money tbd">Countered up from $750/mo</div>
         <div class="meta">
           <div class="row"><span class="k">Scope</span><span class="v">10 TikTok Shop videos/mo. Mia offered one extra IG video for a higher rate</span></div>
-          <div class="row"><span class="k">Last in</span><span class="v">Lou Donovan · Jul 14</span></div>
+          <div class="row live-last"><span class="k">Last in</span><span class="v">Lou Donovan · Jul 14</span></div>
           <div class="row"><span class="k">Next</span><span class="v">Waiting on Lou's response to the counter</span></div>
         </div>
       </article>
@@ -341,7 +373,7 @@
     </summary>
     <div class="grid">
 
-      <article class="card s-gift">
+      <article class="card s-gift" data-query="Modlily Rachel Kerr" data-in="collaborate@miaomalley.com">
         <div class="top">
           <div><div class="brand">Modlily</div><div class="src">Direct · Rachel Kerr</div></div>
           <div class="tag">Gifted</div>
@@ -349,12 +381,12 @@
         <div class="money tbd">Compensation TBD</div>
         <div class="meta">
           <div class="row"><span class="k">Scope</span><span class="v">Facebook collab, try-on talking Reel. Mia asked about pay structure and item choice</span></div>
-          <div class="row"><span class="k">Last in</span><span class="v">Rachel Kerr · Jul 15</span></div>
+          <div class="row live-last"><span class="k">Last in</span><span class="v">Rachel Kerr · Jul 15</span></div>
           <div class="row"><span class="k">Next</span><span class="v">Waiting on Rachel's answer on compensation</span></div>
         </div>
       </article>
 
-      <article class="card s-gift">
+      <article class="card s-gift" data-query="Modelones press-on nails" data-in="collaborate@miaomalley.com">
         <div class="top">
           <div><div class="brand">Modelones</div><div class="src">Direct · Will (PR)</div></div>
           <div class="tag">Gifted</div>
@@ -362,7 +394,7 @@
         <div class="money tbd">Gifted, no cash</div>
         <div class="meta">
           <div class="row"><span class="k">Scope</span><span class="v">Press-on nails. Mia picked two products, asked what is expected in return</span></div>
-          <div class="row"><span class="k">Last in</span><span class="v">Will (PR) · Jul 15</span></div>
+          <div class="row live-last"><span class="k">Last in</span><span class="v">Will (PR) · Jul 15</span></div>
           <div class="row"><span class="k">Next</span><span class="v">Waiting on their next steps and deliverable ask</span></div>
         </div>
       </article>
@@ -378,7 +410,7 @@
     </summary>
     <div class="grid">
 
-      <article class="card s-done">
+      <article class="card s-done" data-query="Quince GRIN Lily Goldberg" data-in="collaborate@miaomalley.com">
         <div class="top">
           <div><div class="brand">Quince</div><div class="src">Direct · via GRIN · Lily Goldberg</div></div>
           <div class="tag">Delivered</div>
@@ -386,7 +418,7 @@
         <div class="money tbd">Gifted + affiliate code</div>
         <div class="meta">
           <div class="row"><span class="k">Scope</span><span class="v">1 IG story + 1 in-feed post. Content approved July 7</span></div>
-          <div class="row"><span class="k">Last in</span><span class="v">GRIN · Jul 9 (metrics request)</span></div>
+          <div class="row live-last"><span class="k">Last in</span><span class="v">GRIN · Jul 9 (metrics request)</span></div>
           <div class="row"><span class="k">Next</span><span class="v next">Send GRIN the Instagram metrics it requested, then close out</span></div>
         </div>
       </article>
@@ -396,9 +428,239 @@
 
   <footer>
     <b>Reading this board.</b> Awaiting your reply sits on top and holds two things: brands that wrote last and need an answer, and threads where you wrote last but the brand has gone quiet for more than seven days, tagged Follow up. Cash booked counts only signed or agreed deals. Cash in play is quoted and sitting with the brand. Cold outreach and gifting-only pitches Mia has not engaged are left off so the live work stays visible.<br>
-    <b>Two dates that matter.</b> Stitch Fix contact Drew is out July 30 and 31, so the contract should land before then. Adrianna Papell dresses ship early August, which is the deadline for pinning down that scope.
+    <b>Two dates that matter.</b> Stitch Fix contact Drew is out July 30 and 31, so the contract should land before then. Adrianna Papell dresses ship early August, which is the deadline for pinning down that scope.<br>
+    <span id="live-footer-note"></span><br>
+    <b>Drafting replies.</b> The "Draft replies" button above looks up each open thread in the section above, drafts a reply in Mia's voice and rate logic, and saves it to the collaborate@ drafts folder for her to review and send. Nothing is sent automatically.
   </footer>
 
 </div>
+
+<script>
+// Live layer: re-check each thread against collaborate@miaomalley.com so "Last in/out" stays
+// current between manual rebuilds, without touching the card copy or layout above.
+function fmtDate(d) {
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+function daysAgo(dateStr) {
+  const d = new Date(dateStr);
+  if (isNaN(d)) return null;
+  return Math.floor((Date.now() - d.getTime()) / 86400000);
+}
+
+async function refreshCard(card) {
+  const query = card.getAttribute('data-query');
+  const inAcct = card.getAttribute('data-in');
+  try {
+    const res = await window.cowork.callMcpTool('mcp__Spark__search', { query, in: inAcct, page_size: 5 });
+    const raw = res.structuredContent ?? (res.content && res.content[0] && res.content[0].text) ?? '';
+    const text = typeof raw === 'string' ? raw : JSON.stringify(raw);
+    const dateMatches = [...text.matchAll(/Date:\s*([\d-]{10}\s[\d:]{5})/g)].map(m => m[1]);
+    const fromMatches = [...text.matchAll(/From:\s*([^\n<]+)/g)].map(m => m[1].trim());
+    if (!dateMatches.length) return null;
+    // "Last in" must always be the brand's side of the conversation, never Mia's own
+    // sent mail, so any entry sent from collaborate@miaomalley.com is excluded here.
+    let latestIdx = -1, latestTime = 0;
+    dateMatches.forEach((d, i) => {
+      const from = (fromMatches[i] || '').toLowerCase();
+      if (from.includes('collaborate@miaomalley.com')) return;
+      const t = new Date(d).getTime();
+      if (t > latestTime) { latestTime = t; latestIdx = i; }
+    });
+    if (latestIdx === -1) return null; // no inbound message found in these results
+    return { date: new Date(dateMatches[latestIdx]), from: fromMatches[latestIdx] || null };
+  } catch (e) {
+    return null;
+  }
+}
+
+async function main() {
+  const cards = document.querySelectorAll('.card[data-query]');
+  let newestOverall = null;
+  let flaggedNew = 0;
+
+  for (const card of cards) {
+    const result = await refreshCard(card);
+    if (!result || !result.date) continue;
+    if (!newestOverall || result.date > newestOverall) newestOverall = result.date;
+
+    const age = daysAgo(result.date.toISOString());
+    const lastRow = card.querySelector('.row.live-last .v');
+    if (lastRow && age !== null && age <= 1) {
+      // something moved since the static copy above was written
+      lastRow.textContent = (result.from || 'Update') + ' · ' + fmtDate(result.date) + ' (new since board was last written)';
+      lastRow.parentElement.classList.add('live-note');
+      flaggedNew++;
+    }
+  }
+
+  document.getElementById('asof-date').textContent = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  document.getElementById('live-status').textContent = flaggedNew
+    ? `Checked against live inbox: ${flaggedNew} thread(s) have new activity since this board was written.`
+    : 'Checked against live inbox: no thread activity newer than what is shown below.';
+  document.getElementById('live-footer-note').textContent = flaggedNew
+    ? 'Rows marked in plum moved since this board was drafted and may need re-tiering.'
+    : '';
+}
+
+main();
+
+// ===== Draft replies layer =====
+// Manual only (button click), never on page load, so opening the board never
+// creates drafts by itself. Only touches cards in the "Awaiting your reply" section.
+
+const MIA_GUIDE = `You are drafting a brand-collaboration email reply as Mia O'Malley (collaborate@miaomalley.com). Follow this voice and negotiation guide exactly.
+
+VOICE: Warm and genuinely enthusiastic, not gushing. Direct: asks about compensation, sizing, timelines, shipping plainly in the same message as the enthusiasm. Efficient: 3-6 sentences unless itemizing a rate breakdown. Grateful without groveling. Never corporate phrasing. At most two questions, phrased as curiosity not demand.
+
+STRUCTURE for a first substantive reply: (1) one line of thanks + specific enthusiasm about the product/brand, (2) one to two clarifying questions (compensation structure, item selection, timeline), (3) a short forward-looking closer like "Looking forward to hearing more!", (4) sign-off "Best," or "Thanks," then "Mia". Do NOT add any signature block, name/title lines, social handles, or media kit link after "Mia" — the draft ends right after her name.
+
+FOLLOW-UP (brand gone quiet 7+ days, no re-pitch): short, warm, low-key, e.g. "Circling back on this! Let me know if there's anything you need on my end." Close with something low-pressure, not urgent.
+
+RATES: baseline anchors — single video standard scope $1,500-$2,000 (1-3mo usage, up to 4 story slides + 5 hi-res images); 2 videos + 10 stills, 12mo usage ~$7,000-$7,500 established; custom GIFs cut from existing video free, standalone GIFs $100 each. She quotes a range or top-of-range first, then flexes down only for a real scope reduction, longer usage pushes toward the higher end. Never mentions other brands' rates. Always states the number alongside what it includes, and closes by inviting a budget conversation rather than presenting it as final.
+
+GIFTING-ONLY: acceptable when brand is new, ask is a single piece of content, no paid-usage/whitelisting mentioned. Still ask about deliverables and an affiliate program before agreeing. Template: "Yes, I'd love to! Thank you for reaching out. What are your deliverables and terms for gifting, and do you have an affiliate program I could use?"
+
+Output ONLY the email body as plain text/markdown (no subject line, no explanation, no commentary before or after).`;
+
+function extractThreadEntries(text) {
+  const blocks = text.split(/─{5,}/);
+  const entries = [];
+  for (const block of blocks) {
+    const idM = block.match(/ID:\s*(\d+)/);
+    const subM = block.match(/Subject:\s*(.*)/);
+    const fromM = block.match(/From:\s*(.*)/);
+    const toM = block.match(/To:\s*(.*)/);
+    const dateM = block.match(/Date:\s*([\d-]{10}\s[\d:]{5})/);
+    if (idM && fromM && dateM) {
+      entries.push({
+        id: idM[1],
+        subject: subM ? subM[1].trim() : '',
+        from: fromM[1].trim(),
+        to: toM ? toM[1].trim() : '',
+        date: new Date(dateM[1]),
+        body: block.trim()
+      });
+    }
+  }
+  return entries;
+}
+
+function normalizeSubject(s) {
+  return s.replace(/^(re|fwd?):\s*/i, '').trim().toLowerCase();
+}
+
+// Search results are ranked by relevance, so entries[0] is the search engine's best
+// match for this card's query. We only trust dates within THAT thread (same normalized
+// subject) rather than the single latest-dated email across all 5 loosely related results,
+// which previously let an unrelated same-day email from a different brand win by date alone.
+function latestInboundForThread(entries, brandKeywords) {
+  if (!entries.length) return { target: null, reason: 'no search results' };
+
+  const topSubject = normalizeSubject(entries[0].subject);
+  let threadEntries = entries.filter(e => normalizeSubject(e.subject) === topSubject);
+  if (threadEntries.length < 2) threadEntries = entries; // thread too thin to group, fall back to full set
+
+  const inbound = threadEntries.filter(e => !e.from.toLowerCase().includes('collaborate@miaomalley.com'));
+  const pool = inbound.length ? inbound : threadEntries;
+  const target = pool.reduce((best, e) => (!best || e.date > best.date) ? e : best, null);
+  if (!target) return { target: null, reason: 'no inbound message found' };
+
+  // Sanity check: the chosen message should actually mention the brand somewhere
+  // (subject or sender) — if not, refuse rather than draft to the wrong thread.
+  const haystack = (target.subject + ' ' + target.from + ' ' + target.body).toLowerCase();
+  const matchesBrand = brandKeywords.some(k => k && haystack.includes(k.toLowerCase()));
+  if (!matchesBrand) {
+    return { target: null, reason: `top match (from ${target.from}) doesn't mention "${brandKeywords.join(' / ')}" — refusing to guess` };
+  }
+  return { target, reason: null };
+}
+
+function extractEmail(fromField) {
+  const m = fromField.match(/<([^>]+)>/);
+  return m ? m[1] : fromField.trim();
+}
+
+async function draftOneCard(card) {
+  const note = document.createElement('div');
+  note.className = 'card-draft-note';
+  note.textContent = 'Drafting…';
+  card.appendChild(note);
+
+  const query = card.getAttribute('data-query');
+  const inAcct = card.getAttribute('data-in');
+  const brand = card.getAttribute('data-brand') || query;
+
+  try {
+    const res = await window.cowork.callMcpTool('mcp__Spark__search', { query, in: inAcct, page_size: 5 });
+    const raw = res.structuredContent ?? (res.content && res.content[0] && res.content[0].text) ?? '';
+    const text = typeof raw === 'string' ? raw : JSON.stringify(raw);
+    const entries = extractThreadEntries(text);
+    const brandKeywords = query.split(/\s+/).filter(w => w.length > 2);
+    const { target, reason } = latestInboundForThread(entries, brandKeywords);
+    if (!target) {
+      note.textContent = `Skipped — ${reason}. Check this one by hand.`;
+      return { brand, ok: false };
+    }
+
+    const cardScope = card.querySelector('.row .v')?.textContent || '';
+    const cardNext = card.querySelector('.v.next')?.textContent || '';
+    const cardMoney = card.querySelector('.money')?.textContent.trim() || '';
+
+    const prompt = `${MIA_GUIDE}
+
+BRAND: ${brand}
+CURRENT OFFER / MONEY ON THE TABLE: ${cardMoney}
+BOARD NOTES ON SCOPE: ${cardScope}
+BOARD NOTES ON WHAT MIA NEEDS TO DO NEXT: ${cardNext}
+
+LATEST INBOUND EMAIL TO REPLY TO (from ${target.from}, ${target.date.toDateString()}):
+${target.body}
+
+Draft Mia's reply to this specific email now.`;
+
+    const draftResult = await window.cowork.askClaude(prompt, [text]);
+    const bodyText = typeof draftResult === 'string' ? draftResult : (draftResult?.text || JSON.stringify(draftResult));
+
+    const draftRes = await window.cowork.callMcpTool('mcp__Spark__draft', {
+      account: inAcct,
+      reply_to: target.id,
+      body: bodyText
+    });
+    if (draftRes && draftRes.isError) {
+      note.textContent = 'Draft failed: ' + (draftRes.content?.[0]?.text || 'unknown error');
+      return { brand, ok: false };
+    }
+    note.textContent = 'Draft saved to collaborate@ Drafts, replying to ' + extractEmail(target.from) + '.';
+    return { brand, ok: true };
+  } catch (e) {
+    note.textContent = 'Draft failed: ' + e.message;
+    return { brand, ok: false };
+  }
+}
+
+async function draftAwaitingReplies() {
+  const btn = document.getElementById('draft-btn');
+  const status = document.getElementById('draft-status');
+  const section = document.getElementById('awaiting-section');
+  const cards = section.querySelectorAll('.card[data-query]');
+
+  btn.disabled = true;
+  section.querySelectorAll('.card-draft-note').forEach(n => n.remove());
+  status.classList.remove('err');
+  status.textContent = `Drafting replies for ${cards.length} thread(s)…`;
+
+  let okCount = 0;
+  for (const card of cards) {
+    const r = await draftOneCard(card);
+    if (r.ok) okCount++;
+  }
+
+  status.textContent = okCount
+    ? `${okCount} of ${cards.length} draft(s) saved to the collaborate@ Drafts folder. Review before sending.`
+    : 'No drafts were saved — see notes on each card above.';
+  if (!okCount) status.classList.add('err');
+  btn.disabled = false;
+}
+</script>
 </body>
 </html>
