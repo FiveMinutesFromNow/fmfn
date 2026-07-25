@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mia O'Malley — Media Kit</title>
+<style>
+  :root{
+    --bg:#FBFAF8;
+    --card:#FFFFFF;
+    --border:#ECEAE6;
+    --ink:#1A1A1A;
+    --muted:#9A968F;
+    --muted2:#B8B4AD;
+    --accent:#7BA7A9;      /* teal distribution bars */
+    --track:#EDEBE7;        /* empty bar track */
+    --pill:#F3F1ED;
+    --radius:22px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    padding:40px 20px 80px;
+  }
+  .wrap{max-width:1060px;margin:0 auto}
+  section{margin-top:28px}
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:34px 38px;
+  }
+
+  /* ---------- HEADER ---------- */
+  .header{display:flex;align-items:flex-start;gap:26px;flex-wrap:wrap}
+  .avatar{
+    width:118px;height:118px;border-radius:50%;
+    object-fit:cover;flex:0 0 auto;
+    border:4px solid #fff;box-shadow:0 0 0 1px var(--border);
+    background:#E9E6E1;
+    display:flex;align-items:center;justify-content:center;
+    font-size:38px;font-weight:600;color:#8A8680;
+  }
+  .id{flex:1 1 240px;min-width:220px}
+  .id h1{font-size:44px;line-height:1.05;font-weight:700;letter-spacing:-.5px}
+  .id .handle{color:var(--muted);font-size:19px;margin-top:6px}
+  .id .loc{color:var(--muted2);font-size:15px;margin-top:2px}
+  .audience{
+    display:flex;align-items:center;gap:22px;
+    margin-left:auto;flex-wrap:wrap;padding-top:6px;
+  }
+  .total .n{font-size:34px;font-weight:700;letter-spacing:-.5px}
+  .total .l{font-size:12px;color:var(--muted);text-transform:none}
+  .divider{width:1px;height:52px;background:var(--border)}
+  .plat{text-align:center;min-width:64px}
+  .plat .icon{width:26px;height:26px;margin:0 auto 6px;display:block}
+  .plat .n{font-size:16px;font-weight:600}
+  .plat .h{font-size:11px;color:var(--muted2);margin-top:1px}
+
+  /* ---------- ABOUT ---------- */
+  .about{display:flex;gap:40px;flex-wrap:wrap}
+  .about .body{flex:1 1 460px}
+  h2.sec{font-size:26px;font-weight:700;margin-bottom:16px;letter-spacing:-.3px}
+  .about p{font-size:16.5px;color:#3a3a3a;max-width:640px}
+  .contact{flex:0 0 210px;text-align:right}
+  .contact .lbl{color:var(--muted2);font-size:14px}
+  .contact a{color:var(--accent);font-size:15px;text-decoration:none;word-break:break-word}
+  .contact .name{font-size:16px;margin-top:2px}
+
+  /* ---------- RATES ---------- */
+  .rates-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px}
+  .rate{
+    border:1px solid var(--border);border-radius:16px;
+    padding:22px 24px;display:flex;align-items:center;justify-content:space-between;gap:14px;
+  }
+  .rate .rl{font-size:18px;font-weight:600}
+  .rate .rs{font-size:13px;color:var(--muted);margin-top:3px}
+  .rate .rp{
+    background:var(--pill);border-radius:12px;padding:12px 18px;
+    font-size:16px;font-weight:600;white-space:nowrap
+  }
+  .rate-note{font-size:12.5px;color:var(--muted2);margin-top:14px}
+
+  /* ---------- STATS ---------- */
+  .stat-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+  .stat-head .t{display:flex;align-items:center;gap:10px;font-size:24px;font-weight:700}
+  .stat-head .t img{width:24px;height:24px}
+  .verified{color:var(--muted2);font-size:14px}
+  .updated{color:var(--muted2);font-size:13px;margin-bottom:22px}
+  .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .metric{border:1px solid var(--border);border-radius:16px;padding:20px 22px;min-height:104px}
+  .metric .mv{font-size:30px;font-weight:700;letter-spacing:-.5px}
+  .metric .ml{font-size:13.5px;color:var(--muted);margin-top:8px}
+
+  .dists{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
+  .dist{border:1px solid var(--border);border-radius:16px;padding:22px 24px}
+  .dist h4{font-size:16px;font-weight:600;margin-bottom:16px}
+  .row{margin-bottom:14px}
+  .row .rt{display:flex;justify-content:space-between;font-size:15px;margin-bottom:6px}
+  .bar{height:9px;background:var(--track);border-radius:6px;overflow:hidden}
+  .bar span{display:block;height:100%;background:var(--accent);border-radius:6px}
+
+  .top-posts{margin-top:16px}
+  .top-posts h4{font-size:22px;font-weight:700;margin-bottom:16px}
+  .posts{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .post{border:1px solid var(--border);border-radius:16px;overflow:hidden;background:#fff}
+  .post .thumb{
+    aspect-ratio:9/14;background:#F4F2EE;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--muted2);font-size:14px;
+    background-size:cover;background-position:center
+  }
+  .post .pv{padding:12px 14px;font-size:14px;color:var(--muted)}
+
+  .foot{text-align:center;color:var(--muted2);font-size:12.5px;margin-top:34px}
+
+  @media(max-width:820px){
+    .metrics{grid-template-columns:repeat(2,1fr)}
+    .dists{grid-template-columns:1fr}
+    .posts{grid-template-columns:repeat(2,1fr)}
+    .rates-grid{grid-template-columns:1fr}
+    .audience{margin-left:0}
+    .contact{text-align:left;flex-basis:100%}
+    .card{padding:26px 22px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<!-- ============================================================= -->
+<!--  EDIT EVERYTHING BELOW. Change a number or word here and the  -->
+<!--  page updates automatically. Followers are numbers (no commas)-->
+<!--  and the "Total Following" adds them up for you. Unknown       -->
+<!--  values are set to 0.                                          -->
+<!-- ============================================================= -->
+<script>
+const DATA = {
+  name: "Mia O'Malley",
+  handle: "@miaomalley",
+  location: "Austin, TX",
+  // Profile photo. Swap for any image URL or a local file next to this page.
+  photo: "https://static.showit.co/800/7SCv0nUKRzKp_5_MLNg1ig/135776/aq4a5264.jpg",
+  contactName: "Mia O'Malley",
+  contactEmail: "collaborate@miaomalley.com",
+
+  about: "Mia is an Austin-based advocate, educator, and content creator focused on plus size empowerment. As a Certified Babywearing Educator and plus size mom, she shows that any parent, whatever their size, can babywear safely and comfortably. Her content moves across inclusive fashion, raw motherhood, plus size maternity, and size-friendly care, with one goal: help fat people feel seen, comfortable, and confident in every part of their lives. She founded @plussizebabywearing so parents who rarely saw themselves in shopping guides finally could, and her work has been featured by the Today Show, Cup of Jo, and PlusMommy.",
+
+  // Followers per platform (numbers only). Total Following = the sum.
+  socials: {
+    instagram: { handle: "@miaomalley",            followers: 41500 },
+    tiktok:    { handle: "@plussizebabywearing",   followers: 38800 },
+    facebook:  { handle: "@miaomalleypsbw",        followers: 22000 }
+  },
+
+  // Rate card. Pre-filled from Mia's rate guide — confirm before sending.
+  rates: [
+    { label: "IG Reel",                       sub: "1 post, up to 3 mo usage",       value: "$1,500–2,000" },
+    { label: "TikTok Video",                  sub: "1 post, up to 3 mo usage",       value: "$1,500–2,000" },
+    { label: "Story Set",                     sub: "up to 4 frames",                 value: "Included w/ video" },
+    { label: "2 Video + 10 Still Bundle",     sub: "12 mo organic + paid usage",     value: "$7,500" },
+    { label: "Additional Video + 5 Stills",   sub: "add-on to a bundle",             value: "$3,000" },
+    { label: "Custom GIF",                    sub: "standalone",                     value: "$100" }
+  ],
+
+  instagram: {
+    // First tile pulls Followers from socials.instagram above. Rest are 0 until you have them.
+    metrics: [
+      { label:"Followers",              value:null },   // null = use follower count
+      { label:"Avg. Reach per Post",    value:0 },
+      { label:"Avg. Likes per Post",    value:0 },
+      { label:"Avg. Comments per Post", value:0 },
+      { label:"Engagement Rate",        value:"0%" },
+      { label:"Avg. Views per Reel",    value:0 },
+      { label:"Avg. Likes per Reel",    value:0 },
+      { label:"Avg. Comments per Reel", value:0 },
+      { label:"Avg. Views per Story",   value:0 },
+      { label:"Avg. Reach per Story",   value:0 },
+      { label:"Avg. Link Clicks/Story", value:0 }
+    ],
+    age:      [ {l:"13-17",v:0},{l:"18-24",v:0},{l:"25-34",v:0},{l:"35-44",v:0},{l:"45-64",v:0},{l:"65+",v:0} ],
+    gender:   [ {l:"Female",v:0},{l:"Male",v:0},{l:"Other",v:0} ],
+    location: [ {l:"US",v:0},{l:"CA",v:0},{l:"GB",v:0},{l:"AU",v:0},{l:"Other",v:0} ],
+    topPosts: [ {img:"",v:0},{img:"",v:0},{img:"",v:0},{img:"",v:0} ]
+  },
+
+  tiktok: {
+    metrics: [
+      { label:"Followers",               value:null },
+      { label:"Total Likes",             value:"1.5M" },
+      { label:"Avg. Views per Video",    value:0 },
+      { label:"Avg. Likes per Video",    value:0 },
+      { label:"Avg. Comments per Video", value:0 },
+      { label:"Avg. Shares per Video",   value:0 },
+      { label:"Avg. Engagement Rate",    value:"0%" }
+    ],
+    age:      [ {l:"13-17",v:0},{l:"18-24",v:0},{l:"25-34",v:0},{l:"35-44",v:0},{l:"45-64",v:0},{l:"65+",v:0} ],
+    gender:   [ {l:"Female",v:0},{l:"Male",v:0} ],
+    location: [ {l:"US",v:0},{l:"MX",v:0},{l:"CA",v:0},{l:"GB",v:0},{l:"Other",v:0} ],
+    topPosts: [ {img:"",v:0},{img:"",v:0},{img:"",v:0},{img:"",v:0} ]
+  },
+
+  facebook: {
+    metrics: [
+      { label:"Followers / Likes", value:null },
+      { label:"Avg. Reach per Post", value:0 },
+      { label:"Avg. Reactions per Post", value:0 },
+      { label:"Avg. Comments per Post", value:0 }
+    ]
+  }
+};
+
+/* ---------- rendering (no need to edit below) ---------- */
+const IG_ICON  = "data:image/svg+xml;utf8,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="1.8"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="#1A1A1A" stroke="none"/></svg>');
+const TT_ICON  = "data:image/svg+xml;utf8,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#1A1A1A"><path d="M16.5 3c.3 2 1.6 3.5 3.5 3.8v2.5c-1.3 0-2.5-.4-3.5-1v5.9c0 3.2-2.4 5.3-5.3 5.3A5.2 5.2 0 0 1 6 14.3c0-3 2.5-5.2 5.6-4.9v2.6a2.5 2.5 0 0 0-1-.2 2.5 2.5 0 1 0 2.5 2.5V3h3.4z"/></svg>');
+const FB_ICON  = "data:image/svg+xml;utf8,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#1A1A1A"><path d="M13.5 21v-8h2.6l.4-3h-3V8.1c0-.9.3-1.5 1.6-1.5H17V4c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.4-4 4.1V10H8v3h2.6v8h2.9z"/></svg>');
+
+function fmt(n){
+  if(n===null||n===undefined) return "0";
+  if(typeof n==="string") return n;
+  if(n>=1000000) return (n/1000000).toFixed(2).replace(/\.00$/,'')+"M";
+  if(n>=1000){ const k=n/1000; return (Number.isInteger(k)?k:k.toFixed(1))+"K"; }
+  return String(n);
+}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+function metricsHTML(list, followers){
+  return list.map(m=>{
+    let v = m.value===null ? fmt(followers) : (typeof m.value==="number"?fmt(m.value):m.value);
+    return `<div class="metric"><div class="mv">${esc(v)}</div><div class="ml">${esc(m.label)}</div></div>`;
+  }).join("");
+}
+function distHTML(title, rows){
+  const body = rows.map(r=>`
+    <div class="row">
+      <div class="rt"><span>${esc(r.l)}</span><span>${r.v}%</span></div>
+      <div class="bar"><span style="width:${Math.max(0,Math.min(100,r.v))}%"></span></div>
+    </div>`).join("");
+  return `<div class="dist"><h4>${esc(title)}</h4>${body}</div>`;
+}
+function postsHTML(posts){
+  return posts.map(p=>`
+    <div class="post">
+      <div class="thumb" ${p.img?`style="background-image:url('${esc(p.img)}')"`:""}>${p.img?"":"post"}</div>
+      <div class="pv">${fmt(p.v)}</div>
+    </div>`).join("");
+}
+function statBlock(title, icon, verified, data, followers){
+  const dists = [];
+  if(data.age)      dists.push(distHTML("Age Distribution (All genders)", data.age));
+  if(data.gender)   dists.push(distHTML("Gender Distribution", data.gender));
+  if(data.location) dists.push(distHTML("Audience Location", data.location));
+  return `
+  <section class="card">
+    <div class="stat-head">
+      <div class="t"><img src="${icon}" alt="">${esc(title)}</div>
+      <div class="verified">${esc(verified)}</div>
+    </div>
+    <div class="metrics">${metricsHTML(data.metrics, followers)}</div>
+    ${dists.length?`<div class="dists">${dists.join("")}</div>`:""}
+    ${data.topPosts?`<div class="top-posts"><h4>Top Posts</h4><div class="posts">${postsHTML(data.topPosts)}</div></div>`:""}
+  </section>`;
+}
+
+function render(){
+  const d = DATA;
+  const ig=d.socials.instagram.followers||0, tt=d.socials.tiktok.followers||0, fb=d.socials.facebook.followers||0;
+  const total = ig+tt+fb;
+
+  const header = `
+  <section class="card header">
+    <img class="avatar" src="${esc(d.photo)}" alt="${esc(d.name)}"
+         onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'avatar',textContent:'${esc(d.name.split(' ').map(w=>w[0]).join('').slice(0,2))}'}))">
+    <div class="id">
+      <h1>${esc(d.name)}</h1>
+      <div class="handle">${esc(d.handle)}</div>
+      <div class="loc">${esc(d.location)}</div>
+    </div>
+    <div class="audience">
+      <div class="total"><div class="n">${fmt(total)}</div><div class="l">Total Following</div></div>
+      <div class="divider"></div>
+      <div class="plat"><img class="icon" src="${IG_ICON}"><div class="n">${fmt(ig)}</div><div class="h">Instagram</div></div>
+      <div class="plat"><img class="icon" src="${TT_ICON}"><div class="n">${fmt(tt)}</div><div class="h">TikTok</div></div>
+      <div class="plat"><img class="icon" src="${FB_ICON}"><div class="n">${fmt(fb)}</div><div class="h">Facebook</div></div>
+    </div>
+  </section>`;
+
+  const about = `
+  <section class="card about">
+    <div class="body">
+      <h2 class="sec">About</h2>
+      <p>${esc(d.about)}</p>
+    </div>
+    <div class="contact">
+      <div class="lbl">Contact</div>
+      <div class="name">${esc(d.contactName)}</div>
+      <a href="mailto:${esc(d.contactEmail)}">${esc(d.contactEmail)}</a>
+    </div>
+  </section>`;
+
+  const rates = `
+  <section class="card">
+    <h2 class="sec">Rates</h2>
+    <div class="rates-grid">
+      ${d.rates.map(r=>`
+        <div class="rate">
+          <div><div class="rl">${esc(r.label)}</div>${r.sub?`<div class="rs">${esc(r.sub)}</div>`:""}</div>
+          <div class="rp">${esc(r.value)}</div>
+        </div>`).join("")}
+    </div>
+    <div class="rate-note">Rates are negotiable based on scope, usage length, and deliverable count.</div>
+  </section>`;
+
+  const igBlock = statBlock("Instagram Stats", IG_ICON, "Public data", d.instagram, ig);
+  const ttBlock = statBlock("TikTok Stats", TT_ICON, "Public data", d.tiktok, tt);
+  const fbBlock = statBlock("Facebook Stats", FB_ICON, "Public data", d.facebook, fb);
+
+  document.getElementById("app").innerHTML =
+    header + about + rates + igBlock + ttBlock + fbBlock +
+    `<div class="foot">Media kit for ${esc(d.name)} · ${esc(d.handle)}</div>`;
+}
+render();
+</script>
+</body>
+</html>
