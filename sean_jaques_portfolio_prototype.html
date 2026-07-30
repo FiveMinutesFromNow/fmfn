@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sean Jaques · Writer / Creative Director</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root{
+  --bg:#100F0D;
+  --bone:#EAE4D8;
+  --dim:#6B665C;
+  --dimmer:#413E38;
+  --tape:#E8C34A;
+  --mono:'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --display:'Anton', 'Arial Narrow', Impact, sans-serif;
+  --body:-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+@supports (height:100dvh){ html,body{height:100dvh} }
+body{
+  background:var(--bg);
+  color:var(--bone);
+  font-family:var(--body);
+  overflow:hidden;
+}
+
+/* ---------- background plates (where teaser mp4s drop in) ---------- */
+.plates{position:fixed;inset:0;z-index:0}
+.plate{
+  position:absolute;inset:0;
+  opacity:0;
+  transition:opacity .5s ease;
+  transform-origin:center;
+}
+.plate.active{opacity:1}
+.plate .fill{
+  position:absolute;inset:-6%;
+  animation:drift 22s ease-in-out infinite alternate;
+}
+@keyframes drift{
+  from{transform:scale(1) translate(0,0)}
+  to{transform:scale(1.08) translate(-1.5%,1%)}
+}
+@media (prefers-reduced-motion: reduce){
+  .plate .fill{animation:none}
+  .plate{transition:none}
+}
+.plate::after{ /* darkening scrim so type always reads */
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg, rgba(16,15,13,.92) 0%, rgba(16,15,13,.72) 45%, rgba(16,15,13,.35) 100%);
+}
+.plate .slot{
+  position:absolute;right:24px;bottom:24px;z-index:2;
+  font-family:var(--mono);font-size:10px;letter-spacing:.08em;
+  color:rgba(234,228,216,.5);
+  border:1px dashed rgba(234,228,216,.3);
+  padding:6px 10px;
+}
+
+/* ---------- frame ---------- */
+.frame{
+  position:relative;z-index:1;
+  height:100%;
+  display:flex;flex-direction:column;
+  padding:clamp(20px,4vw,48px);
+}
+header{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-family:var(--mono);font-size:14px;letter-spacing:.06em;
+  text-shadow:0 1px 10px rgba(16,15,13,.9), 0 0 2px rgba(16,15,13,.8);
+}
+header .name{color:var(--bone);font-weight:600;font-size:16px}
+header .role{color:#A29B8D;font-weight:500}
+@media(max-width:640px){header .role{display:block;font-size:12px}}
+
+/* ---------- project index ---------- */
+.index{
+  flex:1;display:flex;flex-direction:column;justify-content:center;
+  max-width:900px;
+  position:relative;
+  min-height:0;overflow-y:auto;
+  scrollbar-width:none;
+}
+.index::-webkit-scrollbar{display:none}
+.tape{
+  position:absolute;left:-14px;width:6px;height:34px;
+  background:var(--tape);
+  transform:rotate(-4deg);
+  transition:top .25s cubic-bezier(.2,.8,.2,1);
+  box-shadow:0 1px 4px rgba(0,0,0,.5);
+}
+@media (prefers-reduced-motion: reduce){.tape{transition:none}}
+.row{
+  display:flex;align-items:baseline;gap:18px;
+  padding:2px 0 2px 14px;
+  cursor:pointer;
+  text-decoration:none;
+  border:none;background:none;text-align:left;width:100%;
+}
+.row:focus-visible{outline:2px solid var(--tape);outline-offset:2px}
+.row .sc{
+  font-family:var(--mono);font-size:10px;color:var(--dimmer);
+  width:38px;flex:none;letter-spacing:.05em;
+  transition:color .2s;
+}
+.row .title{
+  font-family:var(--display);
+  font-size:clamp(22px,4.2vh,44px);
+  line-height:1.12;
+  letter-spacing:.01em;
+  text-transform:uppercase;
+  color:var(--dim);
+  transition:color .2s;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.row .tag{
+  font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--dimmer);
+  flex:none;transition:color .2s;
+}
+.row.active .title{color:var(--bone)}
+.row.active .sc{color:var(--tape)}
+.row.active .tag{color:var(--dim)}
+@media(max-width:640px){
+  .row .tag{display:none}
+  .row .title{white-space:normal;font-size:clamp(20px,3.4vh,30px)}
+  .row{padding-top:6px;padding-bottom:6px}
+  .row .sc{width:30px}
+}
+
+/* ---------- footer ---------- */
+footer{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-family:var(--mono);font-size:12px;letter-spacing:.06em;
+}
+footer a{color:var(--bone);text-decoration:none;border-bottom:1px solid var(--tape)}
+footer a:hover{color:var(--tape)}
+footer .hint{color:var(--dimmer);font-size:10px}
+.aboutLink{
+  font-family:var(--mono);font-size:14px;font-weight:600;letter-spacing:.08em;
+  color:var(--bone);background:none;border:none;cursor:pointer;padding:2px 0;
+  border-bottom:1px solid var(--tape);
+  text-shadow:0 1px 10px rgba(16,15,13,.9);
+}
+.aboutLink:hover{color:var(--tape)}
+.aboutLink:focus-visible{outline:2px solid var(--tape);outline-offset:2px}
+.overlay .about-body p{margin-bottom:20px}
+.overlay .about-contact{
+  margin-top:44px;padding-top:28px;
+  border-top:1px solid rgba(234,228,216,.15);
+  font-family:var(--mono);font-size:13px;letter-spacing:.04em;
+}
+.overlay .about-contact a{color:var(--bone);text-decoration:none;border-bottom:1px solid var(--tape)}
+.overlay .about-contact a:hover{color:var(--tape)}
+.overlay .about-contact .socials{margin-top:10px;font-size:11px}
+.overlay .about-contact .socials a{color:var(--dim);border-bottom-color:transparent}
+.overlay .about-contact .socials a:hover{color:var(--tape)}
+@media(max-width:640px){footer .hint{display:none}}
+
+/* ---------- project overlay ---------- */
+.overlay{
+  position:fixed;inset:0;z-index:10;
+  background:rgba(16,15,13,.97);
+  display:none;
+  overflow-y:auto;
+}
+.overlay.open{display:block}
+.overlay .inner{
+  max-width:760px;margin:0 auto;
+  padding:clamp(24px,6vw,72px) clamp(20px,4vw,48px);
+}
+.overlay .back{
+  font-family:var(--mono);font-size:12px;color:var(--dim);
+  background:none;border:none;cursor:pointer;letter-spacing:.06em;
+  padding:4px 0;margin-bottom:36px;
+}
+.overlay .back:hover{color:var(--tape)}
+.overlay .back:focus-visible{outline:2px solid var(--tape);outline-offset:2px}
+.overlay h2{
+  font-family:var(--display);text-transform:uppercase;
+  font-size:clamp(34px,6vw,60px);line-height:1.05;margin-bottom:10px;
+}
+.overlay .meta{
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--dim);margin-bottom:32px;
+}
+.overlay .meta .t{color:var(--tape)}
+.overlay .awards{
+  font-family:var(--mono);font-size:10px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--tape);
+  margin:-22px 0 32px;
+}
+.overlay .video{
+  aspect-ratio:16/9;border:1px dashed rgba(234,228,216,.25);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:11px;color:var(--dim);
+  margin-bottom:32px;letter-spacing:.08em;
+}
+.overlay p{
+  font-size:16px;line-height:1.65;color:var(--bone);
+  max-width:60ch;
+}
+.overlay .bts-label{
+  font-family:var(--mono);font-size:11px;letter-spacing:.12em;
+  color:var(--tape);margin:40px 0 12px;
+}
+.overlay .video.vertical{
+  aspect-ratio:9/16;max-width:340px;
+}
+.overlay .video.soon{
+  border:1px solid rgba(232,195,74,.5);
+  color:var(--tape);font-size:13px;letter-spacing:.3em;
+}
+</style>
+</head>
+<body>
+
+<div class="plates" id="plates" aria-hidden="true"></div>
+
+<div class="frame">
+  <header>
+    <div>
+      <span class="name">SEAN JAQUES</span>&nbsp;&nbsp;<span class="role">WRITER / CREATIVE DIRECTOR / PRODUCER</span>
+    </div>
+    <button class="aboutLink" id="aboutLink">ABOUT</button>
+  </header>
+
+  <nav class="index" id="index" aria-label="Selected work">
+    <div class="tape" id="tape"></div>
+  </nav>
+
+  <footer>
+    <div>GOT SOMETHING WORTH MAKING? <a href="mailto:sean@seanjaques.com">SEAN@SEANJAQUES.COM</a></div>
+    <div class="hint">HOVER TO PREVIEW · CLICK FOR PROJECT</div>
+  </footer>
+</div>
+
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="ovTitle">
+  <div class="inner">
+    <button class="back" id="backBtn">&larr; BACK TO INDEX</button>
+    <h2 id="ovTitle"></h2>
+    <div class="meta" id="ovMeta"></div>
+    <div class="awards" id="ovAwards" style="display:none"></div>
+    <div class="video" id="ovVideo">HERO EMBED · YOUTUBE / VIMEO</div>
+    <p id="ovBody"></p>
+    <div id="ovBtsWrap" style="display:none">
+      <div class="bts-label">BEHIND THE SCENES</div>
+      <div class="video" id="ovBts"></div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="aboutOverlay" role="dialog" aria-modal="true" aria-labelledby="abTitle">
+  <div class="inner">
+    <button class="back" id="abBackBtn">&larr; BACK TO INDEX</button>
+    <h2 id="abTitle">ABOUT</h2>
+    <div class="meta"><span class="t">Writer / Creative Director / Producer</span></div>
+    <div class="about-body">
+      <p>I'm Sean Jaques. Writer / Creative Director / Producer. I make campaigns built around personalities: comedians, fighters, MVPs, magical unicorns, and one six-inch rapper.</p>
+      <p>The work here was made with a ridiculously talented team, where I've had a hand in 1,500+ projects for 100+ clients. Last year it picked up 14 honors at the American Advertising Awards, including Best of Show, plus coverage in AdAge and TMZ, which I'm told cancel each other out.</p>
+    </div>
+    <div class="about-contact">
+      GOT SOMETHING WORTH MAKING?<br>
+      <a href="mailto:sean@seanjaques.com">SEAN@SEANJAQUES.COM</a>
+      <div class="socials"><a href="https://www.linkedin.com/in/seanjaques/" target="_blank" rel="noopener">LINKEDIN</a></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const projects = [
+  {src:"teasers/jingle-hoops.mp4", yt:"vxpiKnZKoUI", bts:"_ATCWjFDj2Q", btsVertical:true, awards:"Gold Addy, Online Advertising · Gold Addy, National TV · Bronze Telly · Shortlist, The Drum Awards", t:"Jingle Hoops 2.0", tag:"Talent Campaign", meta:"PrizePicks · Writer / Creative Director",
+   hue:["#2B1E3F","#5A3C86"],
+   body:"FanDuel tweeted that someone should remake the NBA's iconic Jingle Hoops spot. Five months later my team and I did it for real: live at Georgia Tech's McCamish Pavilion, hoops rigged with bells, and six of the internet's biggest personalities, Druski, Joe Budden, BigXThaPlug, Spice Adams, Sketch, and Funny Marco, standing in for six MVPs. Concept to air in twelve weeks, six talent schedules landed on one court for one day. AdAge and TMZ covered it, the NBA released its own remake two weeks later that was panned in relation to ours, and in the shoot's final two hours we grabbed a bonus spot that ended up running before the Super Bowl. Ask me about that part."},
+  {src:"teasers/not-an-expert.mp4", yt:"0kuIrIMTMSM", bts:"4ava9qpm4UE", awards:"", t:"Not an Expert", tag:"Commercial", meta:"FTX · Writer / Creative Director",
+   hue:["#0F2E22","#2E6B4F"],
+   body:"FTX signed Stephen Curry and gave us six hours of his time to launch the partnership. A week of pre-production made those hours count: locations scouted, test runs blocked, permits pulled, and a custom Bored Ape ice sculpture carved for one joke. The spot follows Steph through a day of outrageous expertise to land a simple idea: you don't need to be an expert. Shaq did the voiceover giving us two legends in one commercial. It launched during the playoffs, ran every game of the NBA Finals, took over Bleacher Report and Twitch, and pulled hundreds of millions of impressions. Steph called it his funnest day on set ever."},
+  {src:"teasers/everyone-and-everything.mp4", comingSoon:true, yt:"AAwNkW-Yerk", bts:"", awards:"", t:"Everyone and Everything", tag:"Talent Campaign", meta:"PrizePicks · Writer / Creative Director",
+   hue:["#3A2417","#8A5A2B"],
+   body:"PrizePicks isn't one audience, it's a dozen overlapping ones, so instead of picking a headliner we cast twelve talent partners and built a campaign big enough to hold them all. A motion-control rig ran identical camera moves through two different worlds at once: Sara Saffari mid-set at Zoo Culture on one side, AD on an LA block on the other, one continuous move across two planets. Then we buried all that precision under 16mm grain and lifted shadows so it felt like a 90s sports doc instead of a tech demo. Five locations, three days, five spots at launch, built to be remixed all season without reshooting a frame."},
+  {src:"teasers/happy-tummy-tour.mp4", yt:"zJBR1xJ_I2s", bts:"", awards:"Golden Addy, Best Internet Commercial Campaign · 2.0 continuation: Best of Show (Digital), 2025 American Advertising Awards", t:"The Happy Tummy Tour", tag:"Brand Campaign", meta:"Squatty Potty · Writer / Creative Director",
+   hue:["#3B2A10","#96712A"],
+   body:"Following up the pooping unicorn is a no-win assignment, so we didn't try to beat it, we matched its energy instead. We built a theme park ride: Taylor, a young woman with toilet troubles, boards the Happy Tummy Tour alongside digestive health specialist Ellen and a cast of colorful characters who explain what sitting does to your gut. Off-the-wall enough to honor the original, grounded enough to actually sell. It ran into Black Friday and Cyber Monday and came back with 200M+ impressions, a million clicks, 4x ROAS, and a Golden Addy for Best Internet Commercial Campaign. The strangest brief I've ever loved."},
+  {src:"teasers/lilxthaplug.mp4", yt:"p_O_8opLZiw", bts:"323dap4ysWE", awards:"", t:"LilXThaPlug", tag:"Commercial", meta:"PrizePicks · Writer / Creative Director",
+   hue:["#12303A","#2A6B7C"],
+   body:"PrizePicks signs artists before they peak and handed us the first shot at a BigX campaign, so we dropped a six-inch version of one of music's biggest personalities into a sneaker-drop line and a cramped office cubicle. Ten weeks from brainstorm to production, two days shooting in his hometown of Dallas, two hero spots, ten-plus alt scripts, and a stack of social cutdowns PrizePicks can recut forever without a second shoot. The spots held their own against work made for ten times the cost. Big ad with a tiny talent."},
+  {src:"teasers/moon-man.mp4", yt:"ETmd2qtD8XY", bts:"M-dKNlFgBSI", awards:"", t:"Moon Man", tag:"Brand Character", meta:"MLB x FTX · Writer / Creative Director",
+   hue:["#1B2540","#3D5490"],
+   body:"My favorite thing I've ever made. MLB started calling long home runs \u201cmoon blasts,\u201d so we gave the moon a life and ruined it: the grocery store, the diner, the movie theater, everyone shooting for the moon while he just tries to get through his day. Then he left the commercial entirely and started showing up at playoff games, appearing on Fox and TBS broadcasts while press and fans tried to figure out who he was. From there we built him out across billboards, an MLB.com takeover, a Snapchat filter, a David Ortiz spot, and a photo with Shohei Ohtani that made him look like he'd always been part of baseball."},
+  {src:"teasers/call-center-warrior.mp4", yt:"-6BFj9ZxRpA", bts:"", awards:"", t:"Call Center Warrior", tag:"Commercial", meta:"Kraken · Writer / Creative Director",
+   hue:["#31161B","#7A2E3A"],
+   body:"Kraken wanted more than an athlete endorsement, so we put UFC fighter Renato \u201cMoney\u201d Moicano, the most Bitcoin-maxi fighter in the game, on the customer support desk. He's not there to troubleshoot, he's there to orange-pill every caller. Shot in Miami, running in both the US and Brazil, with social spots disguising product education as wisdom from a shirtless, tattooed fighter who never breaks character. The campaign found its own audience: 665K views on Twitter with engagement from Ariel Helwani, Gilbert Burns, and crypto voices who carry real weight, none of it paid. Turns out the best kind of customer support is slightly unhinged."},
+  {src:"teasers/meet-frank.mp4", yt:"I6ce9jI9Djw", bts:"", awards:"Silver Addy, Local TV Campaign, 2025 American Advertising Awards", t:"Meet Frank", tag:"Brand Character", meta:"STCU · Writer / Creative Director",
+   hue:["#14211A","#3E6B4C"],
+   body:"A credit union wanted business clients, and the category answer is a testimonial or a talking-head explainer. Instead we gave STCU Frank, the first fictional character in the brand's history: a confident, slightly smug guide who walks business owners through their banking like a friend who happens to know everything about commercial lending. He ran across TV, billboards, signage, and a redesigned business website throughout Eastern Washington, and new business clients walked into branches naming him as the reason they came in."},
+  {src:"teasers/beeaware.mp4", yt:"C2uPFP8qmAE", bts:"", awards:"", t:"BeeAware", tag:"Commercial", meta:"Jubilant HollisterStier · Writer / Creative Director",
+   hue:["#2E2A0F","#6F6420"],
+   body:"Venom immunotherapy is a hard thing to make people care about, until you cast a VFX bee. Roughly 7% of the population is allergic to stinging insects, and untreated, that's an estimated 220,000 ER visits a year, but \u2018ask your doctor about immunotherapy\u2019 doesn't exactly stop a scroll. So we built the campaign around a character instead, gave the science a face, and made \u2018BeeAware\u2019 stick. A commercial plus a full photo library to carry the message across digital."},
+  {src:"teasers/santa-at-home.mp4", yt:"Dh4d1nRYONE", bts:"", awards:"", t:"Santa at Home", tag:"Live Stream", meta:"Macy's · Live Stream",
+   hue:["#33121A","#8A2F3D"],
+   body:"People ask about the celebrities. The truth is, the most famous person I've ever worked with is Santa. In 2020, Santaland couldn't open its doors, so Macy's needed to bring the visit to the kids instead, and we produced the livestream that introduced it: a first look at that year's Parade, a walkthrough of the Santaland at Home app that put virtual visits into living rooms, and a message from the big man himself, broadcast to customers and press at once. Producing live television for the world's most beloved talent during the strangest holiday season on record. Hardest booking of my career."},
+];
+
+const platesEl = document.getElementById('plates');
+const indexEl = document.getElementById('index');
+const tape = document.getElementById('tape');
+const overlay = document.getElementById('overlay');
+const backBtn = document.getElementById('backBtn');
+let activeIdx = 0;
+let lastFocused = null;
+
+projects.forEach((p,i)=>{
+  const plate = document.createElement('div');
+  plate.className = 'plate' + (i===0 ? ' active' : '');
+  plate.innerHTML = `<div class="fill" style="background:
+      radial-gradient(120% 90% at 78% 30%, ${p.hue[1]} 0%, ${p.hue[0]} 55%, #0c0b09 100%)"></div>
+    <div class="slot">TEASER.MP4 · 3-6s · MUTED LOOP</div>`;
+  if(p.src){
+    const v = document.createElement('video');
+    v.muted = true; v.loop = true; v.playsInline = true;
+    v.preload = 'auto';
+    v.className = 'teaser';
+    v.src = p.src;
+    v.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;';
+    v.addEventListener('loadeddata', ()=>{
+      plate.querySelector('.fill').style.display = 'none';
+      plate.querySelector('.slot').style.display = 'none';
+    });
+    v.addEventListener('error', ()=>v.remove()); // missing file: keep gradient
+    plate.insertBefore(v, plate.querySelector('.slot'));
+  }
+  platesEl.appendChild(plate);
+
+  const row = document.createElement('button');
+  row.className = 'row' + (i===0 ? ' active' : '');
+  row.innerHTML = `<span class="sc">SC ${String(i+1).padStart(2,'0')}</span>
+    <span class="title">${p.t}</span>
+    <span class="tag">${p.tag}</span>`;
+  row.addEventListener('mouseenter', ()=>setActive(i));
+  row.addEventListener('focus', ()=>setActive(i));
+  row.addEventListener('touchstart', ()=>setActive(i), {passive:true});
+  row.addEventListener('click', ()=>openProject(i, row));
+  indexEl.appendChild(row);
+});
+
+function setActive(i){
+  const changed = (i !== activeIdx);
+  activeIdx = i;
+  document.querySelectorAll('.plate').forEach((el,j)=>{
+    el.classList.toggle('active', j===i);
+    const v = el.querySelector('video.teaser');
+    if(!v) return;
+    if(j===i){
+      if(changed){ try{ v.currentTime = 0; }catch(e){} }
+      v.play().catch(()=>{});
+    } else {
+      v.pause();
+    }
+  });
+  const rows = document.querySelectorAll('.row');
+  rows.forEach((el,j)=>el.classList.toggle('active', j===i));
+  const r = rows[i];
+  tape.style.top = (r.offsetTop + r.offsetHeight/2 - 17) + 'px';
+}
+
+function openProject(i, trigger){
+  lastFocused = trigger;
+  const p = projects[i];
+  document.getElementById('ovTitle').textContent = p.t;
+  document.getElementById('ovMeta').innerHTML =
+    `<span class="t">${p.tag}</span> &nbsp;·&nbsp; ${p.meta}`;
+  document.getElementById('ovBody').textContent = p.body;
+  const aw = document.getElementById('ovAwards');
+  if(p.awards){ aw.textContent = p.awards; aw.style.display = 'block'; }
+  else { aw.textContent = ''; aw.style.display = 'none'; }
+  const vid = document.getElementById('ovVideo');
+  if(p.comingSoon){
+    document.getElementById('ovBody').textContent = '';
+    const aw0 = document.getElementById('ovAwards');
+    aw0.textContent = ''; aw0.style.display = 'none';
+    vid.innerHTML = 'COMING SOON';
+    vid.classList.add('soon');
+    vid.style.border = '';
+    document.getElementById('ovBts').innerHTML = '';
+    document.getElementById('ovBtsWrap').style.display = 'none';
+    overlay.classList.add('open');
+    backBtn.focus();
+    return;
+  }
+  vid.classList.remove('soon');
+  if(p.yt){
+    vid.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${p.yt}?rel=0&modestbranding=1"
+      title="${p.t}" style="width:100%;height:100%;border:0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allowfullscreen></iframe>`;
+    vid.style.border = 'none';
+  } else {
+    vid.textContent = 'HERO EMBED · YOUTUBE / VIMEO';
+    vid.style.border = '';
+  }
+  const btsWrap = document.getElementById('ovBtsWrap');
+  const bts = document.getElementById('ovBts');
+  if(p.bts){
+    bts.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${p.bts}?rel=0&modestbranding=1"
+      title="${p.t} - behind the scenes" style="width:100%;height:100%;border:0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allowfullscreen></iframe>`;
+    bts.style.border = 'none';
+    bts.classList.toggle('vertical', !!p.btsVertical);
+    btsWrap.style.display = 'block';
+  } else {
+    bts.innerHTML = '';
+    btsWrap.style.display = 'none';
+  }
+  overlay.classList.add('open');
+  backBtn.focus();
+}
+function closeProject(){
+  overlay.classList.remove('open');
+  document.getElementById('ovVideo').innerHTML = '';
+  document.getElementById('ovBts').innerHTML = '';
+  if(lastFocused) lastFocused.focus();
+}
+backBtn.addEventListener('click', closeProject);
+
+const aboutOverlay = document.getElementById('aboutOverlay');
+const aboutLink = document.getElementById('aboutLink');
+const abBackBtn = document.getElementById('abBackBtn');
+aboutLink.addEventListener('click', ()=>{
+  lastFocused = aboutLink;
+  aboutOverlay.classList.add('open');
+  abBackBtn.focus();
+});
+function closeAbout(){
+  aboutOverlay.classList.remove('open');
+  if(lastFocused) lastFocused.focus();
+}
+abBackBtn.addEventListener('click', closeAbout);
+
+// Click the dark area outside the content column to return to the index
+overlay.addEventListener('click', e=>{ if(e.target === overlay) closeProject(); });
+aboutOverlay.addEventListener('click', e=>{ if(e.target === aboutOverlay) closeAbout(); });
+
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape'){
+    if(overlay.classList.contains('open')) closeProject();
+    if(aboutOverlay.classList.contains('open')) closeAbout();
+  }
+});
+
+/* position tape after fonts settle */
+window.addEventListener('load', ()=>setActive(0));
+window.addEventListener('resize', ()=>setActive(activeIdx));
+setTimeout(()=>setActive(0), 300);
+</script>
+</body>
+</html>
